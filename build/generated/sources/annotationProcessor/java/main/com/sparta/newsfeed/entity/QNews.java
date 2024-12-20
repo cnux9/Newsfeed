@@ -29,7 +29,7 @@ public class QNews extends EntityPathBase<News> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    public final NumberPath<Long> newsId = createNumber("newsId", Long.class);
+    public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath title = createString("title");
 

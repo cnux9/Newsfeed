@@ -17,14 +17,12 @@ import java.util.List;
 public class News extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long newsId;
+    private Long id;
 
-    @Setter
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @Setter
     @Column
     private String title;
 
