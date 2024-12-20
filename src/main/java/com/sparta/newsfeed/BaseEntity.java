@@ -1,4 +1,4 @@
-package com.sparta.newsfeed.entity;
+package com.sparta.newsfeed;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

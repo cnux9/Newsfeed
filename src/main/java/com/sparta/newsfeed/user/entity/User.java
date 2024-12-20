@@ -1,19 +1,16 @@
-package com.sparta.newsfeed.entity;
+package com.sparta.newsfeed.user.entity;
 
+import com.sparta.newsfeed.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.scheduling.config.Task;
-
-import java.util.List;
 
 @Getter
 @Entity
 @Table(name = "user")
 @EntityListeners(AuditingEntityListener.class)
-public class User extends BaseEntity{
+public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
