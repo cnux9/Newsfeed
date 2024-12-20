@@ -5,12 +5,14 @@ import com.sparta.newsfeed.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Entity
 @Table(name = "newsfeed")
 @EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor
 public class Newsfeed extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
