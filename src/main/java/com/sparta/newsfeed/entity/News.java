@@ -21,7 +21,7 @@ public class News extends BaseEntity{
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "news_id")
+    @JoinColumn(name = "id")
     private User user;
 
     @Setter
