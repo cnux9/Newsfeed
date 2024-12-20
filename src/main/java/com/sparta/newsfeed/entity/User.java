@@ -13,7 +13,6 @@ import java.util.List;
 @Entity
 @Table(name = "user")
 @EntityListeners(AuditingEntityListener.class)
-@NoArgsConstructor
 public class User extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
