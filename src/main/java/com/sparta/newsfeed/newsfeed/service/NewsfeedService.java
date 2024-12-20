@@ -1,4 +1,4 @@
-packag요e com.sparta.newsfeed.newsfeed.service;
+package com.sparta.newsfeed.newsfeed.service;
 
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestDto;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedResponseDto;
