@@ -1,4 +1,4 @@
-package com.sparta.newsfeed.user.cofig;
+package com.sparta.newsfeed.config;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;

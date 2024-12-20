@@ -1,6 +1,6 @@
 package com.sparta.newsfeed.user.service;
 
-import com.sparta.newsfeed.user.cofig.PasswordEncoder;
+import com.sparta.newsfeed.config.PasswordEncoder;
 import com.sparta.newsfeed.user.dto.SignUpResponseDto;
 import com.sparta.newsfeed.user.entity.User;
 import com.sparta.newsfeed.user.repository.UserRepository;
