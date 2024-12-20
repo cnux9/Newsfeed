@@ -1,5 +1,8 @@
 package com.sparta.newsfeed.user.dto;
 
+import lombok.Getter;
+
+@Getter
 public class UserRequestDto {
     private final String email;
     private final String name;

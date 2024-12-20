@@ -1,6 +1,8 @@
 package com.sparta.newsfeed.user.entity;
 
 import com.sparta.newsfeed.BaseEntity;
+import com.sparta.newsfeed.user.dto.UserRequestDto;
+import com.sparta.newsfeed.user.dto.UserResponseDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,11 +17,9 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
     @Column
     private String name;
 
-    @Setter
     @Column(unique = true)
     private String email;
 
@@ -36,5 +36,13 @@ public class User extends BaseEntity {
 
     public User() {
 
+    }
+
+    /*
+    todo : 메서드 이름에 대한 변경의 건, 확인 후 변경이 필요.
+     */
+    public void toUserResponseDto(UserRequestDto requestDto){
+        this.name = requestDto.getName();
+        this.email = requestDto.getEmail();
     }
 }
