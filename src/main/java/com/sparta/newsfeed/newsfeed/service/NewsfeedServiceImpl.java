@@ -32,8 +32,6 @@ public class NewsfeedServiceImpl implements NewsfeedService{
         /*
         Long userId = (Long) httpServletRequest.getSession().getId();
         repository.findAll(userId);
-
-
          */
         return null;
     }
