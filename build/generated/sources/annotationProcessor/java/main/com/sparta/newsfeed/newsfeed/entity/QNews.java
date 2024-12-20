@@ -1,4 +1,4 @@
-package com.sparta.newsfeed.entity;
+package com.sparta.newsfeed.newsfeed.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -8,7 +8,6 @@ import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
-import com.sparta.newsfeed.newsfeed.entity.News;
 
 
 /**
@@ -17,13 +16,13 @@ import com.sparta.newsfeed.newsfeed.entity.News;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QNews extends EntityPathBase<News> {
 
-    private static final long serialVersionUID = -2073862777L;
+    private static final long serialVersionUID = -204496552L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
     public static final QNews news = new QNews("news");
 
-    public final QBaseEntity _super = new QBaseEntity(this);
+    public final com.sparta.newsfeed.QBaseEntity _super = new com.sparta.newsfeed.QBaseEntity(this);
 
     public final StringPath contents = createString("contents");
 
@@ -37,7 +36,7 @@ public class QNews extends EntityPathBase<News> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
-    public final QUser user;
+    public final com.sparta.newsfeed.user.entity.QUser user;
 
     public QNews(String variable) {
         this(News.class, forVariable(variable), INITS);
@@ -57,7 +56,7 @@ public class QNews extends EntityPathBase<News> {
 
     public QNews(Class<? extends News> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.user = inits.isInitialized("user") ? new QUser(forProperty("user")) : null;
+        this.user = inits.isInitialized("user") ? new com.sparta.newsfeed.user.entity.QUser(forProperty("user")) : null;
     }
 
 }
