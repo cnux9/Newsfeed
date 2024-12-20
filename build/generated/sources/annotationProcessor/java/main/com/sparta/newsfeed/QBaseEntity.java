@@ -1,4 +1,4 @@
-package com.sparta.newsfeed.entity;
+package com.sparta.newsfeed;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -7,7 +7,6 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
-import com.sparta.newsfeed.BaseEntity;
 
 
 /**
@@ -16,7 +15,7 @@ import com.sparta.newsfeed.BaseEntity;
 @Generated("com.querydsl.codegen.DefaultSupertypeSerializer")
 public class QBaseEntity extends EntityPathBase<BaseEntity> {
 
-    private static final long serialVersionUID = 712421832L;
+    private static final long serialVersionUID = 1078324651L;
 
     public static final QBaseEntity baseEntity = new QBaseEntity("baseEntity");
 
