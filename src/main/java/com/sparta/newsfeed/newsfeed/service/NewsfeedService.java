@@ -1,4 +1,4 @@
-package com.sparta.newsfeed.newsfeed.service;
+packag요e com.sparta.newsfeed.newsfeed.service;
 
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestDto;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedResponseDto;
@@ -13,5 +13,5 @@ public interface NewsfeedService {
     //Update
     NewsfeedResponseDto updateNewsfeed(NewsfeedRequestDto newsfeedRequestDto);
     //Delete
-    void deleteNewsfeed(Long id);
+    boolean deleteNewsfeed(Long id);
 }

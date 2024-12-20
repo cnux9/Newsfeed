@@ -10,11 +10,11 @@ import java.util.List;
 public interface NewsfeedRepository extends Repository<Newsfeed, Integer>, NewsfeedQueryRepository {
     Newsfeed save(Newsfeed newsfeed);
     Newsfeed findById(Long id);
-    void deleteById(Long id);
 }
 
 interface NewsfeedQueryRepository {
     List<Newsfeed> findAll(List<Long> ids);
+    boolean delete(Long id);
 }
 
 @org.springframework.stereotype.Repository
@@ -36,5 +36,15 @@ class NewsfeedRepositoryImpl implements NewsfeedQueryRepository {
                 .fetchAll()
                 .stream()
                 .toList();
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        long deletedCount = queryFactory
+                .delete(newsfeed)
+                .where(newsfeed.id.eq(id))
+                .execute();
+
+        return deletedCount > 0;
     }
 }

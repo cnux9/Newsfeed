@@ -27,4 +27,9 @@ public class Newsfeed extends BaseEntity {
     @Column(nullable = false)
     @NotBlank
     private String contents;
+
+    public Newsfeed(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
+    }
 }
