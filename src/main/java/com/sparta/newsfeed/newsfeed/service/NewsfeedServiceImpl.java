@@ -29,9 +29,12 @@ public class NewsfeedServiceImpl implements NewsfeedService{
     //TODO :: 세션값 필요
     @Override
     public List<NewsfeedResponseDto> getNewsfeed() {
+        /*
         Long userId = (Long) httpServletRequest.getSession().getId();
         repository.findAll(userId);
 
+
+         */
         return null;
     }
 

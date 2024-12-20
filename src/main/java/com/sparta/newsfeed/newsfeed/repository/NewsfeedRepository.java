@@ -31,7 +31,7 @@ class NewsfeedRepositoryImpl implements NewsfeedQueryRepository {
     public List<Newsfeed> findAll(List<Long> ids) {
         return queryFactory
                 .selectFrom(newsfeed)
-                .where(newsfeed.user.userId.in(ids))
+                .where(newsfeed.user.id.in(ids))
                 .orderBy(newsfeed.createdAt.asc())
                 .fetchAll()
                 .stream()
