@@ -27,9 +27,8 @@ public class LoginFilter implements Filter {
             return;
         }
 
-        HttpSession session = httprequest.getSession(false);
-
         // TODO: UUID 리팩토링?
+        HttpSession session = httprequest.getSession(false);
         if (session == null || session.getAttribute("sessionKey") == null) {
             httpresponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 상태 코드 반환
             httpresponse.getWriter().write("로그인 해주세요.");

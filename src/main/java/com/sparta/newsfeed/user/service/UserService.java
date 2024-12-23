@@ -39,12 +39,14 @@ public class UserService {
     }
 
     public UserResponseDto findUser(Long id) {
-        User foundUser = userRepository.findByIdOrElseThrow(id);
+        //TODO: 에러 처리
+        User foundUser = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
         return new UserResponseDto(id, foundUser.getEmail(), foundUser.getName());
     }
 
     public UserResponseDto updateUser(Long id, UserRequestDto requestDto){
-        User foundUser = userRepository.findByIdOrElseThrow(id);
+        //TODO: 에러 처리
+        User foundUser = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
         foundUser.partialUpdate(requestDto);
 
         return new UserResponseDto(id, requestDto.getEmail(), requestDto.getName());
@@ -53,8 +55,8 @@ public class UserService {
 
     public void deleteUser(Long id, HttpSession session){
         newsfeedRepository.deleteNewsfeedsByUserId(id);
-
-        User foundUser = userRepository.findByIdOrElseThrow(id);
+        //TODO: 에러 처리
+        User foundUser = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
         foundUser.updateSoftDelete();
 
         authService.logout(session);
