@@ -1,14 +1,11 @@
 package com.sparta.newsfeed.user.controller;
 
-import com.sparta.newsfeed.auth.Auth;
 import com.sparta.newsfeed.user.dto.SignUpRequestDto;
 import com.sparta.newsfeed.user.dto.SignUpResponseDto;
 import com.sparta.newsfeed.user.dto.UserRequestDto;
 import com.sparta.newsfeed.user.dto.UserResponseDto;
 import com.sparta.newsfeed.user.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +29,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> findUser(@PathVariable Long id) {
-        UserResponseDto userResponseDto = userService.findUserById(id);
+        UserResponseDto userResponseDto = userService.findUser(id);
 
         return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }

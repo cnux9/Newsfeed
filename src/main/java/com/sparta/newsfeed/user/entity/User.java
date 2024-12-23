@@ -2,10 +2,8 @@ package com.sparta.newsfeed.user.entity;
 
 import com.sparta.newsfeed.BaseEntity;
 import com.sparta.newsfeed.user.dto.UserRequestDto;
-import com.sparta.newsfeed.user.dto.UserResponseDto;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
@@ -25,11 +23,9 @@ public class User extends BaseEntity {
 
     private String password;
 
+    // TODO: 세터 사용?
     @Column(name = "is_deleted")
     private boolean isDeleted;
-
-//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-//    private List<Newsfeed> newsfeedList;
 
     public User(String name, String email, String password) {
         this.name = name;
@@ -41,10 +37,15 @@ public class User extends BaseEntity {
 
     }
 
+    // TODO: 삭제된 사용자의 이메일을 보관하는 테이블 분리?
+    public void updateSoftDelete() {
+        this.isDeleted = true;
+    }
+
     /*
     todo : 메서드 이름에 대한 변경의 건, 확인 후 변경이 필요.
      */
-    public void toUserResponseDto(UserRequestDto requestDto){
+    public void partialUpdate(UserRequestDto requestDto){
         this.name = requestDto.getName();
         this.email = requestDto.getEmail();
     }

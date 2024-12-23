@@ -11,6 +11,4 @@ public class AuthRequestDto {
     private String email;
     @NotNull
     private String password;
-
-
 }
