@@ -1,6 +1,5 @@
 package com.sparta.newsfeed.auth.service;
 
-import com.sparta.newsfeed.auth.Auth;
 import com.sparta.newsfeed.config.PasswordEncoder;
 import com.sparta.newsfeed.auth.dto.AuthRequestDto;
 import com.sparta.newsfeed.user.entity.User;
@@ -10,6 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -22,16 +25,28 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void login(AuthRequestDto authRequestDto, HttpSession session) {
-        User user = userRepository.findUserByEmailOrElseThrow(authRequestDto.getEmail());
+    private final Map<UUID, String> sessionMap = new HashMap<>();
 
-        if (!passwordEncoder.matches(authRequestDto.getPassword(),user.getPassword())) {
+    public void login(AuthRequestDto requestDto, HttpSession session) {
+        User user = userRepository.findUserByEmailOrElseThrow(requestDto.getEmail());
+
+        if (user.isDeleted()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist email" + requestDto.getEmail());
+        }
+
+        if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호가 다릅니다.");
         }
-        Auth.login(session, user.getEmail());
+
+        UUID uuid = UUID.randomUUID();
+        session.setAttribute("sessionKey", uuid);
+        sessionMap.put(uuid, user.getEmail());
     }
 
     public void logout(HttpSession session) {
-        Auth.logout(session);
+        UUID uuid = (UUID) session.getAttribute("sessionKey");
+        sessionMap.remove(uuid);
+
+        session.invalidate();
     }
 }

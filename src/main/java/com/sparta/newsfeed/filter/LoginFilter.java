@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.util.PatternMatchUtils;
 
 import java.io.IOException;
@@ -15,7 +16,7 @@ public class LoginFilter implements Filter {
     /*
     회원 가입 기능 구현을 위해 일단 화이트리스트에 /user/signup만 적용해 둔 상태, 추후에 로그인과 로그아웃에 대한 url 추가 필요합니다.
      */
-    private static final String[] WHITE_LIST = {"/","/user/signup","/auth/login"};
+    private static final String[] WHITE_LIST = {"/", "/user/signup", "/auth/login"};
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException, RuntimeException {
@@ -26,6 +27,9 @@ public class LoginFilter implements Filter {
         log.info("로그인 필터 로직 실행");
 
         //WHITE_LIST에 포함된 경우 true 이므로 false 처리를 위해 !를 붙임
+
+        // TODO: 메소드를 고려한 회원가입 조건 필터링
+//        ((HttpServletRequest) request).getMethod() == HttpMethod.POST;
         if(!isWhiteList(requestURI)) {
             HttpSession session = httprequest.getSession(false);
 

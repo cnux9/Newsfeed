@@ -25,11 +25,9 @@ public class User extends BaseEntity {
 
     private String password;
 
+    // TODO: 세터 사용?
     @Column(name = "is_deleted")
     private boolean isDeleted;
-
-//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-//    private List<Newsfeed> newsfeedList;
 
     public User(String name, String email, String password) {
         this.name = name;
@@ -39,6 +37,11 @@ public class User extends BaseEntity {
 
     public User() {
 
+    }
+
+    // TODO: 삭제된 사용자의 이메일을 보관하는 테이블 분리?
+    public void updateSoftDelete() {
+        this.isDeleted = true;
     }
 
     /*
