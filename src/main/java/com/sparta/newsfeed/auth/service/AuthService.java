@@ -49,4 +49,12 @@ public class AuthService {
 
         session.invalidate();
     }
+
+    public String getUserEmail(HttpSession session){
+        UUID uuid = (UUID) session.getAttribute("sessionKey");
+        String email = sessionMap.get(uuid);
+        if(email == null)
+            return "";
+        return email;
+    }
 }
