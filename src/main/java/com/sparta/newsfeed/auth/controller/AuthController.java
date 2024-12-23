@@ -4,10 +4,7 @@ import com.sparta.newsfeed.auth.dto.AuthRequestDto;
 import com.sparta.newsfeed.auth.service.AuthService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -17,7 +14,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public void login(@RequestBody AuthRequestDto authRequestDto, HttpSession session) {
-        authService.login(authRequestDto, session);
+    public void login(@RequestBody AuthRequestDto dto, HttpSession session) {
+        authService.login(dto, session);
+    }
+
+    // TODO: 컨틀로러에서 처리? 서비스에서 처리?
+    @GetMapping("/logout")
+    public void login(HttpSession session) {
+        authService.logout(session);
     }
 }

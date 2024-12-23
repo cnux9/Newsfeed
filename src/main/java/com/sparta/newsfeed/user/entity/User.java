@@ -28,6 +28,9 @@ public class User extends BaseEntity {
     @Column(name = "is_deleted")
     private boolean isDeleted;
 
+//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+//    private List<Newsfeed> newsfeedList;
+
     public User(String name, String email, String password) {
         this.name = name;
         this.email = email;

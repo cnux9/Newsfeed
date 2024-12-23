@@ -1,5 +1,6 @@
 package com.sparta.newsfeed.auth.service;
 
+import com.sparta.newsfeed.auth.Auth;
 import com.sparta.newsfeed.config.PasswordEncoder;
 import com.sparta.newsfeed.auth.dto.AuthRequestDto;
 import com.sparta.newsfeed.user.entity.User;
@@ -24,9 +25,13 @@ public class AuthService {
     public void login(AuthRequestDto authRequestDto, HttpSession session) {
         User user = userRepository.findUserByEmailOrElseThrow(authRequestDto.getEmail());
 
-        if(!passwordEncoder.matches(authRequestDto.getPassword(),user.getPassword())){
-            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호 오답");
+        if (!passwordEncoder.matches(authRequestDto.getPassword(),user.getPassword())) {
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호가 다릅니다.");
         }
-        session.setAttribute("sessionKey", user.getEmail());
+        Auth.login(session, user.getEmail());
+    }
+
+    public void logout(HttpSession session) {
+        Auth.logout(session);
     }
 }

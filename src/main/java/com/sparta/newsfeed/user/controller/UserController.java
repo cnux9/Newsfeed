@@ -1,13 +1,18 @@
 package com.sparta.newsfeed.user.controller;
 
+import com.sparta.newsfeed.auth.Auth;
 import com.sparta.newsfeed.user.dto.SignUpRequestDto;
 import com.sparta.newsfeed.user.dto.SignUpResponseDto;
 import com.sparta.newsfeed.user.dto.UserRequestDto;
 import com.sparta.newsfeed.user.dto.UserResponseDto;
 import com.sparta.newsfeed.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,20 +23,16 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<SignUpResponseDto> signup (@RequestBody SignUpRequestDto requestDto) {
-
-        SignUpResponseDto signUpResponseDto =
-                userService.signUp(
-                        requestDto.getName(),
-                        requestDto.getEmail(),
-                        requestDto.getPassword()
-                );
-        return new ResponseEntity<>(signUpResponseDto, HttpStatus.CREATED);
+    public ResponseEntity<SignUpResponseDto> createUser(
+            @Validated @RequestBody SignUpRequestDto requestDto
+    ) {
+        SignUpResponseDto responseDto = userService.createUser(requestDto);
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDto> findById(@PathVariable Long id) {
-        UserResponseDto userResponseDto = userService.findById(id);
+    public ResponseEntity<UserResponseDto> findUser(@PathVariable Long id) {
+        UserResponseDto userResponseDto = userService.findUserById(id);
 
         return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
@@ -40,7 +41,6 @@ public class UserController {
     public ResponseEntity<UserResponseDto> updateUser(
             @PathVariable Long id,
             @RequestBody UserRequestDto requestDto
-
     ) {
         UserResponseDto responseDto =
                 userService.updateUser(
@@ -55,11 +55,8 @@ public class UserController {
     애초에 로그인 필터가 있기 때문에 사용자 수정과 삭제에서는 일단 비밀번호 검증을 하지 않았다.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.delete(id);
-
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id, HttpSession session) {
+        userService.deleteUser(id, session);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
 }
