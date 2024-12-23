@@ -10,19 +10,19 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/friend")
+@RequestMapping("/user/friend")
 public class FriendController {
 
     private final FriendService friendService;
 
     //친구 요청
-    @PostMapping
+    @PostMapping("/request")
     public FriendResponseDto addFriend(@RequestBody FriendRequestDto friendRequestDto) {
         return friendService.addFriend(friendRequestDto);
     }
 
     //친구 수락/거절
-    @PostMapping
+    @PostMapping("/reply")
     public FriendResponseDto replyFriend(@RequestBody FriendRequestDto friendRequestDto) {
         return friendService.replyFriend(friendRequestDto);
     }
