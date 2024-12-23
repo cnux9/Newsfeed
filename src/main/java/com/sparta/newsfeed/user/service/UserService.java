@@ -45,18 +45,16 @@ public class UserService {
 
     public UserResponseDto updateUser(Long id, UserRequestDto requestDto){
         User foundUser = userRepository.findByIdOrElseThrow(id);
-        foundUser.toUserResponseDto(requestDto);
+        foundUser.partialUpdate(requestDto);
 
         return new UserResponseDto(id, requestDto.getEmail(), requestDto.getName());
     }
 
 
     public void deleteUser(Long id, HttpSession session){
-//        TODO: deleteNewsfeedsByUserId 메소드 구현
-//        newsfeedRepository.deleteNewsfeedsByUserId(id);
+        newsfeedRepository.deleteNewsfeedsByUserId(id);
 
         User foundUser = userRepository.findByIdOrElseThrow(id);
-//        TODO: deleteNewsfeedsByUserId 메소드 구현
         foundUser.updateSoftDelete();
 
         authService.logout(session);

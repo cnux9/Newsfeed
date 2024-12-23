@@ -26,13 +26,12 @@ public class LoginFilter implements Filter {
 
         log.info("로그인 필터 로직 실행");
 
-        //WHITE_LIST에 포함된 경우 true 이므로 false 처리를 위해 !를 붙임
-
         // TODO: 메소드를 고려한 회원가입 조건 필터링
 //        ((HttpServletRequest) request).getMethod() == HttpMethod.POST;
         if(!isWhiteList(requestURI)) {
             HttpSession session = httprequest.getSession(false);
 
+            // TODO: UUID 리팩토링?
             if (session == null || session.getAttribute("sessionKey") == null) {
                 httpresponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 상태 코드 반환
                 httpresponse.getWriter().write("로그인 해주세요."); // 응답 메시지 설정
