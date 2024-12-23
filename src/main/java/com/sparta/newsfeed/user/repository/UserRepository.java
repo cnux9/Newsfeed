@@ -7,7 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository <User, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
     /*
     주석처리된 부분은 유저 이름으로 호출할 필요가 있으시면 쓰세욥
@@ -15,6 +15,7 @@ public interface UserRepository extends JpaRepository <User, Long> {
     //Optional<User> findUserByName(String username);
     Optional<User> findUserByEmail(String email);
 
+    // TODO: 서비스에서 에러 처리
     default User findUserByEmailOrElseThrow(String email){
         return findUserByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist email" + email));
     }
@@ -22,6 +23,8 @@ public interface UserRepository extends JpaRepository <User, Long> {
     default User findByIdOrElseThrow(Long id) {
         return findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
     }
+
+    boolean existsUserByEmail(String email);
 
 //    default User findUserByNameOrElseThrow(String name) {
 //        return findUserByName(name).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist username = " + username));
