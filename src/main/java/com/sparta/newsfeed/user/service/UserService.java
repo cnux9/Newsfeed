@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.UUID;
+
 @Transactional
 @Service
 @RequiredArgsConstructor
@@ -29,23 +31,48 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public SignUpResponseDto createUser(SignUpRequestDto dto) {
+        System.out.println("iddddddd");
         if (userRepository.existsUserByEmail(dto.getEmail())) {
+            // 해당 이메일의 사용자가 탈퇴했는지 여부는 알 수 없음
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "가입이 불가능한 이메일입니다.");
         }
         User user = new User(dto.getName(), dto.getEmail(), passwordEncoder.encode(dto.getPassword()));
+        System.out.println("iddddddd22222");
         User savedUser = userRepository.save(user);
 
         return new SignUpResponseDto(savedUser.getName(), savedUser.getEmail());
     }
 
     public UserResponseDto findUser(Long id) {
-        User foundUser = userRepository.findByIdOrElseThrow(id);
+        //TODO: 에러 처리
+        User foundUser = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
         return new UserResponseDto(id, foundUser.getEmail(), foundUser.getName());
     }
 
-    public UserResponseDto updateUser(Long id, UserRequestDto requestDto){
-        User foundUser = userRepository.findByIdOrElseThrow(id);
-        foundUser.partialUpdate(requestDto);
+    public UserResponseDto updateUser(Long id, UserRequestDto requestDto, HttpSession session){
+        //TODO: 에러 처리
+        User foundUser = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
+
+        String sessionEmail = authService.getSessionEmail(session);
+
+        if (requestDto.getOldPassword().equals(requestDto.getNewPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can not change with same password.");
+        }
+
+        if (!foundUser.getEmail().equals(sessionEmail)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You can not update other user's information.");
+        }
+
+        //TODO: 수정 시 required? 예를 들어 비밀번호만 수정(비밀번호 확인) or 이름/이메일 변경
+        if (!passwordEncoder.matches(requestDto.getOldPassword(), foundUser.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is wrong.");
+        }
+
+        foundUser.partialUpdate(
+                requestDto.getName(),
+                requestDto.getEmail(),
+                passwordEncoder.encode(requestDto.getNewPassword())
+        );
 
         return new UserResponseDto(id, requestDto.getEmail(), requestDto.getName());
     }
@@ -53,8 +80,8 @@ public class UserService {
 
     public void deleteUser(Long id, HttpSession session){
         newsfeedRepository.deleteNewsfeedsByUserId(id);
-
-        User foundUser = userRepository.findByIdOrElseThrow(id);
+        //TODO: 에러 처리
+        User foundUser = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
         foundUser.updateSoftDelete();
 
         authService.logout(session);
