@@ -4,6 +4,7 @@ import com.sparta.newsfeed.config.PasswordEncoder;
 import com.sparta.newsfeed.auth.dto.AuthRequestDto;
 import com.sparta.newsfeed.user.entity.User;
 import com.sparta.newsfeed.user.repository.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,14 +29,15 @@ public class AuthService {
     private final Map<UUID, String> sessionMap = new HashMap<>();
 
     public void login(AuthRequestDto requestDto, HttpSession session) {
-        User user = userRepository.findUserByEmailOrElseThrow(requestDto.getEmail());
+        // TODO: 에러 처리
+        User user = userRepository.findUserByEmail(requestDto.getEmail()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist email = " + requestDto.getEmail()));
 
         if (user.isDeleted()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist email" + requestDto.getEmail());
         }
 
         if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
-            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호가 다릅니다.");
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is wrong.");
         }
 
         UUID uuid = UUID.randomUUID();
@@ -48,5 +50,10 @@ public class AuthService {
         sessionMap.remove(uuid);
 
         session.invalidate();
+    }
+
+    public String getSessionEmail(HttpSession session) {
+        UUID uuid = (UUID) session.getAttribute("sessionKey");
+        return this.sessionMap.get(uuid);
     }
 }

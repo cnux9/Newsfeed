@@ -45,8 +45,9 @@ public class User extends BaseEntity {
     /*
     todo : 메서드 이름에 대한 변경의 건, 확인 후 변경이 필요.
      */
-    public void partialUpdate(UserRequestDto requestDto){
-        this.name = requestDto.getName();
-        this.email = requestDto.getEmail();
+    public void partialUpdate(String name, String email, String password){
+        this.name = name;
+        this.email = email;
+        this.password = password;
     }
 }

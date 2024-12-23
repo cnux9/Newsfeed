@@ -37,12 +37,14 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDto> updateUser(
             @PathVariable Long id,
-            @RequestBody UserRequestDto requestDto
+            @RequestBody UserRequestDto requestDto,
+            HttpSession session
     ) {
         UserResponseDto responseDto =
                 userService.updateUser(
                         id,
-                        requestDto
+                        requestDto,
+                        session
                 );
         return new ResponseEntity<>(responseDto,HttpStatus.OK);
     }
