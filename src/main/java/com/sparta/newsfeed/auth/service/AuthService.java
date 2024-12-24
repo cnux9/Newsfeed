@@ -25,6 +25,10 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public String getUserEmail(UUID userId) {
+        return sessionMap.get(userId);
+    }
+
     private final Map<UUID, String> sessionMap = new HashMap<>();
 
     public void login(AuthRequestDto requestDto, HttpSession session) {
