@@ -48,17 +48,7 @@ public class UserService {
 
         //TODO: 에러 처리
         User foundUser = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
-
-        if (!foundUser.getEmail().equals(requestDto.getEmail()) && userRepository.existsUserByEmail(requestDto.getEmail())) {
-            // 해당 이메일의 사용자가 탈퇴했는지 여부는 알 수 없음]
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "변경이 불가능한 이메일입니다.");
-        }
-
         String sessionEmail = authService.getSessionEmail(session);
-
-        if (requestDto.getOldPassword().equals(requestDto.getNewPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can not change with same password.");
-        }
 
         if (!foundUser.getEmail().equals(sessionEmail)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You can not update other user's information.");
@@ -69,9 +59,12 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is wrong.");
         }
 
+        if (requestDto.getOldPassword().equals(requestDto.getNewPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can not change with same password.");
+        }
+
         foundUser.partialUpdate(
                 requestDto.getName(),
-                requestDto.getEmail(),
                 passwordEncoder.encode(requestDto.getNewPassword())
         );
 
