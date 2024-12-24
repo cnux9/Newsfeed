@@ -1,9 +1,6 @@
 package com.sparta.newsfeed.user.controller;
 
-import com.sparta.newsfeed.user.dto.SignUpRequestDto;
-import com.sparta.newsfeed.user.dto.SignUpResponseDto;
-import com.sparta.newsfeed.user.dto.UserRequestDto;
-import com.sparta.newsfeed.user.dto.UserResponseDto;
+import com.sparta.newsfeed.user.dto.*;
 import com.sparta.newsfeed.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -20,6 +17,12 @@ public class UserController {
 
     private final UserService userService;
 
+    /**
+    반영되어야 할 부분
+     * 회원가입 시 비밀번호 조건설정 - 완료
+     * 중복 아이디(이메일) 확인 - 완료
+     *
+     **/
     @PostMapping
     public ResponseEntity<SignUpResponseDto> createUser(
             @Validated @RequestBody SignUpRequestDto requestDto
@@ -55,8 +58,11 @@ public class UserController {
     애초에 로그인 필터가 있기 때문에 사용자 수정과 삭제에서는 일단 비밀번호 검증을 하지 않았다.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id, HttpSession session) {
-        userService.deleteUser(id, session);
+    public ResponseEntity<Void> deleteUser(
+            @PathVariable Long id,
+            @Valid @RequestBody UserDeleteRequestDto requestDto , HttpSession session
+    ) {
+        userService.deleteUser(id, requestDto ,session);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
