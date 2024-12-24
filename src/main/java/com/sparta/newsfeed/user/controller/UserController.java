@@ -17,12 +17,6 @@ public class UserController {
 
     private final UserService userService;
 
-    /**
-    반영되어야 할 부분
-     * 회원가입 시 비밀번호 조건설정 - 완료
-     * 중복 아이디(이메일) 확인 - 완료
-     *
-     **/
     @PostMapping
     public ResponseEntity<UserResponseDto> createUser(
             @Validated @RequestBody SignUpRequestDto requestDto

@@ -16,6 +16,5 @@ public class UserUpdateRequestDto {
     private final String oldPassword;
     @NotNull
     @JsonProperty("new_password")
-    // TODO: 패턴 상수화 필요
     private final String newPassword;
 }
