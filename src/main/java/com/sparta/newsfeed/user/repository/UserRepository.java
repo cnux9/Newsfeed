@@ -2,8 +2,6 @@ package com.sparta.newsfeed.user.repository;
 
 import com.sparta.newsfeed.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
