@@ -11,4 +11,8 @@ public interface FriendService {
     FriendResponseDto replyFriend(FriendRequestDto friendRequestDto);
 
     List<FriendResponseDto> getAllFriends();
+
+    List<FriendResponseDto> getRequestFriends();
+
+    void deleteFriend(FriendRequestDto friendRequestDto);
 }

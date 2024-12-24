@@ -7,8 +7,7 @@ import lombok.Setter;
 @Getter
 @RequiredArgsConstructor
 public class FriendRequestDto {
-    Long requested;
-    Long received;
+    String email;
     @Setter
     int state = 0;
 }
