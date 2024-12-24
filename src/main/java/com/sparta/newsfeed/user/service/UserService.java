@@ -36,7 +36,7 @@ public class UserService {
         validatePassword(requestDto.getPassword());
 
         if (userRepository.existsUserByEmail(requestDto.getEmail())) {
-            // 해당 이메일의 사용자가 탈퇴했는지 여부는 알 수 없음
+            // 해당 이메일의 사용자가 탈퇴했는지 여부는 클라이언트가 알 수 없음
             throw new CustomException.EmailUnavailableException();
         }
         User user = new User(requestDto.getName(), requestDto.getEmail(), passwordEncoder.encode(requestDto.getPassword()));
