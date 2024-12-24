@@ -31,13 +31,11 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public SignUpResponseDto createUser(SignUpRequestDto dto) {
-        System.out.println("iddddddd");
         if (userRepository.existsUserByEmail(dto.getEmail())) {
             // 해당 이메일의 사용자가 탈퇴했는지 여부는 알 수 없음
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "가입이 불가능한 이메일입니다.");
         }
         User user = new User(dto.getName(), dto.getEmail(), passwordEncoder.encode(dto.getPassword()));
-        System.out.println("iddddddd22222");
         User savedUser = userRepository.save(user);
 
         return new SignUpResponseDto(savedUser.getName(), savedUser.getEmail());

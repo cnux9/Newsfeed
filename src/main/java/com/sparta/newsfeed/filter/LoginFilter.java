@@ -40,13 +40,7 @@ public class LoginFilter implements Filter {
     }
 
     private boolean isSignup(ServletRequest request, String requestURI) {
-
-        log.info("((HttpServletRequest) request).getMethod() = " + ((HttpServletRequest) request).getMethod());
-        log.info("HttpMethod.POST.name() = " + HttpMethod.POST.name());
         boolean isPostMethod = ((HttpServletRequest) request).getMethod().equals(HttpMethod.POST.name());
-
-        log.info("requestURI = " + requestURI);
-        log.info("PatternMatchUtils.simpleMatch(\"/user\", requestURI) = " + PatternMatchUtils.simpleMatch("/user", requestURI));
         return isPostMethod && PatternMatchUtils.simpleMatch("/user", requestURI);
     }
 
