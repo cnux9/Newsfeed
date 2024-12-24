@@ -1,9 +1,11 @@
 package com.sparta.newsfeed.newsfeed.controller;
 
+import com.sparta.newsfeed.PageQuery;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestDto;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedResponseDto;
 import com.sparta.newsfeed.newsfeed.service.NewsfeedService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +26,8 @@ public class NewsfeedController {
     }
 
     @GetMapping
-    public ResponseEntity<List<NewsfeedResponseDto>> getNewsfeed() {
-        return new ResponseEntity<>(newsfeedService.getNewsfeed(), HttpStatus.OK);
+    public ResponseEntity<Page<NewsfeedResponseDto>> findNewsfeed(PageQuery page) {
+        return new ResponseEntity<>(newsfeedService.findNewsfeed(page), HttpStatus.OK);
     }
 
     @PutMapping
