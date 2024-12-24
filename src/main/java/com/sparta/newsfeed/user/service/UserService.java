@@ -50,8 +50,8 @@ public class UserService {
         User foundUser = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
 
         if (!foundUser.getEmail().equals(requestDto.getEmail()) && userRepository.existsUserByEmail(requestDto.getEmail())) {
-            // 해당 이메일의 사용자가 탈퇴했는지 여부는 알 수 없음
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "가입이 불가능한 이메일입니다.");
+            // 해당 이메일의 사용자가 탈퇴했는지 여부는 알 수 없음]
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "변경이 불가능한 이메일입니다.");
         }
 
         String sessionEmail = authService.getSessionEmail(session);
@@ -80,6 +80,11 @@ public class UserService {
 
     public void deleteUser(Long id, UserDeleteRequestDto requestDto , HttpSession session){
         User foundUser = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
+        String email = authService.getSessionEmail(session);
+
+        if (!email.equals(foundUser.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can not delete other user's account.");
+        }
 
         //TODO:겹치는 코드 , 메서드 추출 ?
         if (!passwordEncoder.matches(requestDto.getPassword(), foundUser.getPassword())) {
@@ -89,7 +94,6 @@ public class UserService {
         newsfeedRepository.deleteNewsfeedsByUserId(id);
         //TODO: 에러 처리
         foundUser.updateSoftDelete();
-
         authService.logout(session);
     }
 
