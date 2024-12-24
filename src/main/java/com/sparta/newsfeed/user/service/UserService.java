@@ -37,7 +37,7 @@ public class UserService {
 
         if (userRepository.existsUserByEmail(requestDto.getEmail())) {
             // 해당 이메일의 사용자가 탈퇴했는지 여부는 알 수 없음
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "가입이 불가능한 이메일입니다.");
+            throw new CustomException.EmailUnavailableException();
         }
         User user = new User(requestDto.getName(), requestDto.getEmail(), passwordEncoder.encode(requestDto.getPassword()));
         User savedUser = userRepository.save(user);
@@ -46,30 +46,27 @@ public class UserService {
     }
 
     public UserResponseDto findUser(Long id) {
-        //TODO: 에러 처리
-        User foundUser = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
+        User foundUser = userRepository.findById(id).orElseThrow(CustomException.NoSuchUserException::new);
         return new UserResponseDto(id, foundUser.getEmail(), foundUser.getName());
     }
 
     public UserResponseDto updateUser(Long id, UserUpdateRequestDto requestDto, HttpSession session){
         validatePassword(requestDto.getNewPassword());
 
-        //TODO: 에러 처리
-        User foundUser = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
+        User foundUser = userRepository.findById(id).orElseThrow(CustomException.NoSuchUserException::new);
 
         String sessionEmail = authService.getSessionEmail(session);
 
         if (!foundUser.getEmail().equals(sessionEmail)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You can not update other user's information.");
+            throw new CustomException.UnauthorizedUserUpdateException();
         }
 
         if (requestDto.getOldPassword().equals(requestDto.getNewPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can not change with same password.");
+            throw new CustomException.UpdateWithSamePasswordException();
         }
 
-        //TODO: 수정 시 required? 예를 들어 비밀번호만 수정(비밀번호 확인) or 이름/이메일 변경
         if (!passwordEncoder.matches(requestDto.getOldPassword(), foundUser.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is wrong.");
+            throw new CustomException.WrongPasswordException();
         }
 
         foundUser.partialUpdate(
@@ -77,15 +74,15 @@ public class UserService {
                 passwordEncoder.encode(requestDto.getNewPassword())
         );
 
-        return new UserResponseDto(id, requestDto.getName());
+        return new UserResponseDto(id, foundUser.getEmail(), foundUser.getName());
     }
 
     public void deleteUser(Long id, UserDeleteRequestDto requestDto , HttpSession session){
-        User foundUser = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
+        User foundUser = userRepository.findById(id).orElseThrow(CustomException.NoSuchUserException::new);
 
         //TODO:겹치는 코드 , 메서드 추출 ?
         if (!passwordEncoder.matches(requestDto.getPassword(), foundUser.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is wrong.");
+            throw new CustomException.WrongPasswordException();
         }
 
         newsfeedRepository.deleteNewsfeedsByUserId(id);
