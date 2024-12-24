@@ -51,9 +51,6 @@ public class NewsfeedServiceImpl implements NewsfeedService {
 
         friendsIds.add(user.getId());
 
-//        var a = newsfeedRepository.findAll(page.toPageable(), friendsIds).map(NewsfeedResponseDto::toDto);
-//        var b = Page.from(a);
-
         return Page.from(newsfeedRepository.findAll(page.toPageable(), friendsIds)
                 .map(NewsfeedResponseDto::toDto));
     }
@@ -73,6 +70,11 @@ public class NewsfeedServiceImpl implements NewsfeedService {
 
     @Override
     public boolean deleteNewsfeed(Long id) {
+        User user = getAuthenticatedUser();
+        Newsfeed feed = newsfeedRepository.findById(id);
+        if(!user.getId().equals(feed.getUser().getId()))
+            throw new CustomException.UnauthorizedException("자신의 피드만 삭제할 수 있습니다.");
+
         return newsfeedRepository.delete(id);
     }
 
