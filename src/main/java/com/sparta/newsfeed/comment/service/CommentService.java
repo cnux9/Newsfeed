@@ -5,11 +5,8 @@ import com.sparta.newsfeed.comment.dto.CommentRequestDto;
 import com.sparta.newsfeed.comment.dto.CommentResponseDto;
 import com.sparta.newsfeed.comment.entity.Comment;
 import com.sparta.newsfeed.comment.repository.CommentRepository;
-import com.sparta.newsfeed.exception.CustomException;
 import com.sparta.newsfeed.newsfeed.entity.Newsfeed;
 import com.sparta.newsfeed.newsfeed.repository.NewsfeedRepository;
-import com.sparta.newsfeed.user.dto.UserRequestDto;
-import com.sparta.newsfeed.user.dto.UserResponseDto;
 import com.sparta.newsfeed.user.entity.User;
 import com.sparta.newsfeed.user.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
@@ -22,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +30,7 @@ public class CommentService {
 
     private final AuthService authService;
 
-    private final int PAGE_NUMBER = 10;
+    private final int PAGE_NUMBER = 0;
     private final int PAGE_SIZE = 10;
 
 
@@ -55,9 +51,9 @@ public class CommentService {
     public List<CommentResponseDto> findComments(Long newsfeedId) {
         PageRequest pageRequest = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
 
-        Page<Comment> page = commentRespository.findAllByNewsfeedId(newsfeedId, pageRequest);
-        List<Comment> commentResponseDtoList = page.getContent();
-        return commentResponseDtoList
+        Page<Comment> page = commentRespository.findCommentsByNewsfeedId(newsfeedId, pageRequest);
+        List<Comment> commentList = page.getContent();
+        return commentList
                 .stream()
                 .map(CommentResponseDto::new)
                 .toList();

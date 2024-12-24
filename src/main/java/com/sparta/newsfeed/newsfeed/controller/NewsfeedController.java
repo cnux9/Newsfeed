@@ -3,6 +3,7 @@ package com.sparta.newsfeed.newsfeed.controller;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestDto;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedResponseDto;
 import com.sparta.newsfeed.newsfeed.service.NewsfeedService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +19,10 @@ public class NewsfeedController {
 
     @PostMapping
     public ResponseEntity<NewsfeedResponseDto> createNewsfeed(
-            @RequestBody NewsfeedRequestDto newsfeedRequestDto
+            @RequestBody NewsfeedRequestDto newsfeedRequestDto,
+            HttpSession session
     ) {
-        return new ResponseEntity<>(newsfeedService.createNewsfeed(newsfeedRequestDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(newsfeedService.createNewsfeed(newsfeedRequestDto, session), HttpStatus.CREATED);
     }
 
     @GetMapping

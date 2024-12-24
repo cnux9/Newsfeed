@@ -5,9 +5,11 @@ import com.sparta.newsfeed.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
+@NoArgsConstructor
 @Entity
 @Table(name = "newsfeed")
 @EntityListeners(AuditingEntityListener.class)
@@ -28,7 +30,8 @@ public class Newsfeed extends BaseEntity {
     @NotBlank
     private String contents;
 
-    public Newsfeed(String title, String contents) {
+    public Newsfeed(User user, String title, String contents) {
+        this.user = user;
         this.title = title;
         this.contents = contents;
     }
