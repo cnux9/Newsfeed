@@ -8,11 +8,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-
-    /*
-    주석처리된 부분은 유저 이름으로 호출할 필요가 있으시면 쓰세욥
-     */
-    //Optional<User> findUserByName(String username);
     Optional<User> findUserByEmail(String email);
 
     default User findByIdOrElseThrow(Long id) {
@@ -20,8 +15,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     }
 
     boolean existsUserByEmail(String email);
-
-//    default User findUserByNameOrElseThrow(String name) {
-//        return findUserByName(name).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist username = " + username));
-//    }
 }
