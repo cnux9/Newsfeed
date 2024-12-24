@@ -7,12 +7,20 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface FriendRepository extends JpaRepository<FriendRequest, Long> {
+public interface FriendRequestRepository extends JpaRepository<FriendRequest, Long> {
     List<FriendRequest> findByState(request_state state);
 
     @Query("SELECT f FROM FriendRequest f WHERE f.requested = :userId OR f.received = :userId")
     List<FriendRequest> findByUser(@Param("userId") Long userId);
 
-    FriendRequest findByReceived(Long requested, Long received);
+
+    @Query("SELECT fr FROM FriendRequest fr WHERE " +
+            "((fr.requested = :requested AND fr.received = :received) " +
+            "OR (fr.requested = :received AND fr.received = :requested)) ")
+    List<FriendRequest> findExistRequest(@Param("requested") Long requested,
+                                             @Param("received") Long received);
+
+    FriendRequest findByReceivedAndRequested(Long requested, Long received);
 }

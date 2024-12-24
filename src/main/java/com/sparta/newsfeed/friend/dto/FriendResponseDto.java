@@ -8,13 +8,17 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class FriendResponseDto {
+    Long id;
     Long requested;
     Long received;
     request_state state;
 
-    public FriendResponseDto(FriendRequest friend) {
-        this.requested = friend.getRequested();
-        this.received = friend.getReceived();
-        this.state = friend.getState();
+    public static FriendResponseDto toDto(FriendRequest friend) {
+        return new FriendResponseDto(
+                friend.getId(),
+                friend.getRequested(),
+                friend.getReceived(),
+                friend.getState()
+        );
     }
 }

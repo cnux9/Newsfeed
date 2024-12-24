@@ -1,9 +1,6 @@
 package com.sparta.newsfeed.friend.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,9 +11,14 @@ public class FriendRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Column(nullable = false)
     Long requested;
+
+    @Column(nullable = false)
     Long received;
+
     @Setter
+    @Column(nullable = false)
     request_state state;
 
     public FriendRequest(Long requested, Long received, request_state state) {

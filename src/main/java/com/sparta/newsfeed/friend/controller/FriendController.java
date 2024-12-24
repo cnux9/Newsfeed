@@ -18,15 +18,18 @@ public class FriendController {
     private final FriendService friendService;
 
     //친구 요청
-    @PostMapping("/request")
+    @PostMapping
     public ResponseEntity<FriendResponseDto> addFriend(@RequestBody FriendRequestDto friendRequestDto) {
         return new ResponseEntity<>(friendService.addFriend(friendRequestDto), HttpStatus.OK);
     }
 
     //친구 수락/거절
-    @PostMapping("/reply")
-    public FriendResponseDto replyFriend(@RequestBody FriendRequestDto friendRequestDto) {
-        return friendService.replyFriend(friendRequestDto);
+    @PostMapping("{id}")
+    public FriendResponseDto replyFriend(
+            @PathVariable Long id,
+            @RequestParam Boolean isAccepted
+    ) {
+        return friendService.replyFriend(id, isAccepted);
     }
 
     //친구 요청 불러오기
@@ -36,8 +39,8 @@ public class FriendController {
     }
 
     //친구 진짜 불러오기
-    @GetMapping("/friend")
-    public List<FriendResponseDto> getAllFriends() {
+    @GetMapping
+    public List<Long> getAllFriends() {
         return friendService.getAllFriends();
     }
 

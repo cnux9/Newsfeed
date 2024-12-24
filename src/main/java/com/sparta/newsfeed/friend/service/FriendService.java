@@ -8,9 +8,9 @@ import java.util.List;
 public interface FriendService {
     FriendResponseDto addFriend(FriendRequestDto friendRequestDto);
 
-    FriendResponseDto replyFriend(FriendRequestDto friendRequestDto);
+    FriendResponseDto replyFriend(Long id, Boolean isAccepted);
 
-    List<FriendResponseDto> getAllFriends();
+    List<Long> getAllFriends();
 
     List<FriendResponseDto> getRequestFriends();
 
