@@ -6,6 +6,7 @@ import com.sparta.newsfeed.user.dto.UserRequestDto;
 import com.sparta.newsfeed.user.dto.UserResponseDto;
 import com.sparta.newsfeed.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/signup")
+    @PostMapping
     public ResponseEntity<SignUpResponseDto> createUser(
             @Validated @RequestBody SignUpRequestDto requestDto
     ) {
@@ -37,12 +38,14 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDto> updateUser(
             @PathVariable Long id,
-            @RequestBody UserRequestDto requestDto
+            @Valid @RequestBody UserRequestDto requestDto,
+            HttpSession session
     ) {
         UserResponseDto responseDto =
                 userService.updateUser(
                         id,
-                        requestDto
+                        requestDto,
+                        session
                 );
         return new ResponseEntity<>(responseDto,HttpStatus.OK);
     }

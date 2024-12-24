@@ -37,7 +37,7 @@ public class NewsfeedServiceImpl implements NewsfeedService{
 
     @Override
     public Page<NewsfeedResponseDto> findNewsfeed(PageQuery page) {
-        User user = userRepository.findUserByEmailOrElseThrow(authService.getUserEmail(session));
+        User user = userRepository.findUserByEmail(authService.getSessionEmail(session)).get();
 
         List<Long> friendsIds = new ArrayList<>();//friendRequestRepository.findAllFriendsId(user.getId());
         //friendsIds.add(user.getId())

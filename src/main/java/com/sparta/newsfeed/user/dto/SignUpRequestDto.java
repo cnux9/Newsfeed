@@ -1,6 +1,7 @@
 package com.sparta.newsfeed.user.dto;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,5 +11,7 @@ public class SignUpRequestDto {
     private final String name;
     @Email
     private final String email;
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,}$")
+    // TODO: 패턴 상수화 필요
     private final String password;
 }
