@@ -1,7 +1,6 @@
 package com.sparta.newsfeed.user.entity;
 
 import com.sparta.newsfeed.BaseEntity;
-import com.sparta.newsfeed.user.dto.UserRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;

@@ -5,8 +5,6 @@ import com.sparta.newsfeed.PageQuery;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestDto;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedResponseDto;
 
-import java.util.List;
-
 public interface NewsfeedService {
     //Create
     NewsfeedResponseDto createNewsfeed(NewsfeedRequestDto newsfeedRequestDto);

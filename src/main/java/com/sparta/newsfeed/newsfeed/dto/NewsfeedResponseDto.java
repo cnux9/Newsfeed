@@ -1,6 +1,5 @@
 package com.sparta.newsfeed.newsfeed.dto;
 
-import com.sparta.newsfeed.BaseEntity;
 import com.sparta.newsfeed.newsfeed.entity.Newsfeed;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
