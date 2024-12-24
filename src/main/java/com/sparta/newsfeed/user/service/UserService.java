@@ -2,16 +2,21 @@ package com.sparta.newsfeed.user.service;
 
 import com.sparta.newsfeed.auth.service.AuthService;
 import com.sparta.newsfeed.config.PasswordEncoder;
+import com.sparta.newsfeed.exception.CustomException;
 import com.sparta.newsfeed.newsfeed.repository.NewsfeedRepository;
 import com.sparta.newsfeed.user.dto.*;
 import com.sparta.newsfeed.user.entity.User;
 import com.sparta.newsfeed.user.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Transactional
 @Service
@@ -25,12 +30,16 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserResponseDto createUser(SignUpRequestDto dto) {
-        if (userRepository.existsUserByEmail(dto.getEmail())) {
+    private static final Pattern passwordPattern = Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,}$");
+
+    public UserResponseDto createUser(SignUpRequestDto requestDto) {
+        validatePassword(requestDto.getPassword());
+
+        if (userRepository.existsUserByEmail(requestDto.getEmail())) {
             // 해당 이메일의 사용자가 탈퇴했는지 여부는 알 수 없음
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "가입이 불가능한 이메일입니다.");
         }
-        User user = new User(dto.getName(), dto.getEmail(), passwordEncoder.encode(dto.getPassword()));
+        User user = new User(requestDto.getName(), requestDto.getEmail(), passwordEncoder.encode(requestDto.getPassword()));
         User savedUser = userRepository.save(user);
 
         return new UserResponseDto(savedUser.getId(), savedUser.getName(), savedUser.getEmail());
@@ -43,6 +52,7 @@ public class UserService {
     }
 
     public UserResponseDto updateUser(Long id, UserUpdateRequestDto requestDto, HttpSession session){
+        validatePassword(requestDto.getNewPassword());
 
         //TODO: 에러 처리
         User foundUser = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
@@ -83,6 +93,13 @@ public class UserService {
         foundUser.updateSoftDelete();
 
         authService.logout(session);
+    }
+
+    public void validatePassword(String password) {
+        Matcher matcher = passwordPattern.matcher(password);
+        if (!matcher.matches()) {
+            throw new CustomException.InvalidPasswordException();
+        }
     }
 
 }

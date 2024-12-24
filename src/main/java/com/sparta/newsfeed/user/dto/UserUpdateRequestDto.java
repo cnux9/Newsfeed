@@ -16,7 +16,6 @@ public class UserUpdateRequestDto {
     private final String oldPassword;
     @NotNull
     @JsonProperty("new_password")
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,}$")
     // TODO: 패턴 상수화 필요
     private final String newPassword;
 }
