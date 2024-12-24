@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    Page<Comment> findAllByTaskId(Long newsfeedId, PageRequest pageRequest);
+    Page<Comment> findAllByNewsfeedId(Long newsfeedId, PageRequest pageRequest);
 }

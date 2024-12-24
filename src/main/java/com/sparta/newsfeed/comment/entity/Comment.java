@@ -5,6 +5,7 @@ import com.sparta.newsfeed.newsfeed.entity.Newsfeed;
 import com.sparta.newsfeed.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.scheduling.config.Task;
 
@@ -18,6 +19,7 @@ public class Comment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @Column
     private String contents;
 

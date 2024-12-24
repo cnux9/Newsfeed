@@ -4,17 +4,12 @@ package com.sparta.newsfeed.comment.controller;
 import com.sparta.newsfeed.comment.dto.CommentRequestDto;
 import com.sparta.newsfeed.comment.dto.CommentResponseDto;
 import com.sparta.newsfeed.comment.service.CommentService;
-import com.sparta.newsfeed.user.dto.SignUpRequestDto;
-import com.sparta.newsfeed.user.dto.SignUpResponseDto;
 import com.sparta.newsfeed.user.dto.UserRequestDto;
 import com.sparta.newsfeed.user.dto.UserResponseDto;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,30 +30,30 @@ public class CommentController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{taskId}")
-    public ResponseEntity<List<CommentResponseDto>> findComment(@PathVariable Long taskId) {
-        List<CommentResponseDto> responseDtoList = commentService.findComments(taskId);
+    @GetMapping("/{newsfeedId}")
+    public ResponseEntity<List<CommentResponseDto>> findComment(@PathVariable Long newsfeedId) {
+        List<CommentResponseDto> responseDtoList = commentService.findComments(newsfeedId);
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDto> updateUser(
-            @PathVariable Long id,
-            @RequestBody UserRequestDto requestDto,
+    @PutMapping("/{commentId}")
+    public ResponseEntity<CommentResponseDto> updateComment(
+            @PathVariable Long commentId,
+            @RequestBody CommentRequestDto requestDto,
             HttpSession session
     ) {
-        UserResponseDto responseDto =
+        CommentResponseDto responseDto =
                 commentService.updateComment(
-                        id,
+                        commentId,
                         requestDto,
                         session
                 );
         return new ResponseEntity<>(responseDto,HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long id, HttpSession session) {
-        commentService.deleteComment(id, session);
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId, HttpSession session) {
+        commentService.deleteComment(commentId, session);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

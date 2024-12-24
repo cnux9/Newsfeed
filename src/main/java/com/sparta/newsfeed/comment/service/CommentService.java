@@ -5,6 +5,7 @@ import com.sparta.newsfeed.comment.dto.CommentRequestDto;
 import com.sparta.newsfeed.comment.dto.CommentResponseDto;
 import com.sparta.newsfeed.comment.entity.Comment;
 import com.sparta.newsfeed.comment.repository.CommentRepository;
+import com.sparta.newsfeed.exception.CustomException;
 import com.sparta.newsfeed.newsfeed.entity.Newsfeed;
 import com.sparta.newsfeed.newsfeed.repository.NewsfeedRepository;
 import com.sparta.newsfeed.user.dto.UserRequestDto;
@@ -16,9 +17,12 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +55,7 @@ public class CommentService {
     public List<CommentResponseDto> findComments(Long newsfeedId) {
         PageRequest pageRequest = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
 
-        Page<Comment> page = commentRespository.findAllByTaskId(newsfeedId, pageRequest);
+        Page<Comment> page = commentRespository.findAllByNewsfeedId(newsfeedId, pageRequest);
         List<Comment> commentResponseDtoList = page.getContent();
         return commentResponseDtoList
                 .stream()
@@ -59,12 +63,33 @@ public class CommentService {
                 .toList();
     }
 
-    public UserResponseDto updateComment(Long id, UserRequestDto requestDto, HttpSession session) {
-        return null;
+    public CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto, HttpSession session) {
+
+        Comment foundComment = commentRespository.findById(commentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        User commentWriter = userRepository.findById(foundComment.getUser().getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        String sessionEmail = authService.getSessionEmail(session);
+
+        if (!sessionEmail.equals(commentWriter.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        foundComment.setContents(requestDto.getContents());
+
+        return new CommentResponseDto(foundComment);
     }
 
-    public void deleteComment(Long id, HttpSession session) {
+    public void deleteComment(Long commentId, HttpSession session) {
+        Comment foundComment = commentRespository.findById(commentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        User commentWriter = userRepository.findById(foundComment.getUser().getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        User newsfeedWriter = userRepository.findById(foundComment.getNewsfeed().getUser().getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
+        String sessionEmail = authService.getSessionEmail(session);
 
+        if (!sessionEmail.equals(commentWriter.getEmail()) && !sessionEmail.equals(newsfeedWriter.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        commentRespository.delete(foundComment);
     }
 }
