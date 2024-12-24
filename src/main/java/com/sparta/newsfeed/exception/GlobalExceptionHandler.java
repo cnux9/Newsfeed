@@ -11,4 +11,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ex.getHttpStatus())
                 .body(new ErrorResponse(ex.getErrorCode(), ex.getMessage()));
     }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleNoSuchUserException(NoSuchUserException ex) {
+        return ResponseEntity.status(ex.getHttpStatus())
+                .body(new ErrorResponse(ex.getErrorCode(), ex.getMessage()));
+    }
 }

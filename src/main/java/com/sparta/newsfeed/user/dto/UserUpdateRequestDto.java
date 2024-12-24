@@ -9,9 +9,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class UserRequestDto {
-    @Email
-    private final String email;
+public class UserUpdateRequestDto {
     private final String name;
     @NotNull
     @JsonProperty("old_password")

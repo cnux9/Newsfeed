@@ -24,10 +24,10 @@ public class UserController {
      *
      **/
     @PostMapping
-    public ResponseEntity<SignUpResponseDto> createUser(
+    public ResponseEntity<UserResponseDto> createUser(
             @Validated @RequestBody SignUpRequestDto requestDto
     ) {
-        SignUpResponseDto responseDto = userService.createUser(requestDto);
+        UserResponseDto responseDto = userService.createUser(requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
@@ -41,7 +41,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDto> updateUser(
             @PathVariable Long id,
-            @Valid @RequestBody UserRequestDto requestDto,
+            @Valid @RequestBody UserUpdateRequestDto requestDto,
             HttpSession session
     ) {
         UserResponseDto responseDto =

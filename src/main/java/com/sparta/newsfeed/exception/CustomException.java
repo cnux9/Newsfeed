@@ -24,4 +24,10 @@ public class CustomException extends RuntimeException {
             super(message, "UNAUTHORIZED", 401);
         }
     }
+
+    public static class NoSuchUserException extends CustomException {
+        public NoSuchException(String message) {
+            super("No such user"message, "UNAUTHORIZED", 401);
+        }
+    }
 }
