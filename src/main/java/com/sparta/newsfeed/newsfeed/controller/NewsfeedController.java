@@ -1,11 +1,11 @@
 package com.sparta.newsfeed.newsfeed.controller;
 
+import com.sparta.newsfeed.Page;
 import com.sparta.newsfeed.PageQuery;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestDto;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedResponseDto;
 import com.sparta.newsfeed.newsfeed.service.NewsfeedService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,14 +30,15 @@ public class NewsfeedController {
         return new ResponseEntity<>(newsfeedService.findNewsfeed(page), HttpStatus.OK);
     }
 
-    @PutMapping
+    @PutMapping("{id}")
     public ResponseEntity<NewsfeedResponseDto> updateNewsfeed(
+            @PathVariable Long id,
             @RequestBody NewsfeedRequestDto newsfeedRequestDto
             ) {
-        return new ResponseEntity<>(newsfeedService.updateNewsfeed(newsfeedRequestDto), HttpStatus.OK);
+        return new ResponseEntity<>(newsfeedService.updateNewsfeed(id, newsfeedRequestDto), HttpStatus.OK);
     }
 
-    @DeleteMapping
+    @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteNewsfeed(
             @PathVariable Long id
     ) {

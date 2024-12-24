@@ -19,7 +19,6 @@ public interface NewsfeedRepository extends Repository<Newsfeed, Integer>, Newsf
 interface NewsfeedQueryRepository {
     Page<Newsfeed> findAll(Pageable pageable, List<Long> ids);
     boolean delete(Long id);
-
     void deleteNewsfeedsByUserId(Long id);
 }
 

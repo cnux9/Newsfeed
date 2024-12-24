@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class NewsfeedRequestDto extends BaseEntity {
+public class NewsfeedRequestDto {
     private String title;
     private String content;
 }
