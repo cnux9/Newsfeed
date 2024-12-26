@@ -3,6 +3,7 @@ package com.sparta.newsfeed.friend.controller;
 import com.sparta.newsfeed.friend.dto.FriendRequestDto;
 import com.sparta.newsfeed.friend.dto.FriendResponseDto;
 import com.sparta.newsfeed.friend.service.FriendService;
+import com.sparta.newsfeed.user.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,9 +39,9 @@ public class FriendController {
         return friendService.getRequestFriends();
     }
 
-    //친구 진짜 불러오기
+    //친구 목록 불러오기
     @GetMapping
-    public List<Long> getAllFriends() {
+    public List<UserResponseDto> getAllFriends() {
         return friendService.getAllFriends();
     }
 

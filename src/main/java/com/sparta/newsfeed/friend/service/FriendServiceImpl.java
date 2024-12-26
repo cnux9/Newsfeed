@@ -7,6 +7,7 @@ import com.sparta.newsfeed.friend.dto.FriendResponseDto;
 import com.sparta.newsfeed.friend.entity.FriendRequest;
 import com.sparta.newsfeed.friend.entity.request_state;
 import com.sparta.newsfeed.friend.repository.FriendRequestRepository;
+import com.sparta.newsfeed.user.dto.UserResponseDto;
 import com.sparta.newsfeed.user.entity.User;
 import com.sparta.newsfeed.user.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
@@ -29,7 +30,7 @@ public class FriendServiceImpl implements FriendService {
     public FriendResponseDto addFriend(FriendRequestDto friendRequestDto) {
         //세션에서 이메일 가져오기
         String userEmail = authService.getSessionEmail(httpSession);
-        if(friendRequestDto.getEmail().equals(userEmail))
+        if (friendRequestDto.getEmail().equals(userEmail))
             throw new CustomException.BadRequestException("자기 자신은 친구로 추가할 수 없습니다.");
         //이메일로부터 유저 찾기
         User user = userRepository.findUserByEmail(userEmail).orElseThrow();
@@ -38,7 +39,7 @@ public class FriendServiceImpl implements FriendService {
 
         //이메일로부터 유저 찾기
         User friend = userRepository.findUserByEmail(friendRequestDto.getEmail()).orElse(null);
-        if(friend == null)
+        if (friend == null)
             throw new NoSuchElementException("해당 이메일을 가진 유저: " + friendRequestDto.getEmail() + " 는 존재하지 않습니다.");
         //유저로부터 아이디 가져오기
         Long friendId = friend.getId();
@@ -103,16 +104,21 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public List<Long> getAllFriends() {
+    public List<UserResponseDto> getAllFriends() {
         String userEmail = authService.getSessionEmail(httpSession);
         User user = userRepository.findUserByEmail(userEmail).orElseThrow();
         Long userId = user.getId();
 
         List<FriendRequest> friends = friendRequestRepository.findByUser(userId);
-        return friends.stream()
-                .filter(friendRequest -> isValidRequest(request_state.ACCEPTED, friendRequest, userId))
-                .map(FriendRequest::getId)
-                .collect(Collectors.toList());
+
+        return userRepository.findAllById(
+                        friends.stream()
+                                .filter(friendRequest -> isValidRequest(request_state.ACCEPTED, friendRequest, userId))
+                                .map(FriendRequest::getId)
+                                .toList()
+                ).stream()
+                .map(UserResponseDto::toDto)
+                .toList();
     }
 
     @Override
