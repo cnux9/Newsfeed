@@ -6,8 +6,6 @@ import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestDto;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestQueryDto;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedResponseDto;
 
-import java.time.LocalDateTime;
-
 public interface NewsfeedService {
     //Create
     NewsfeedResponseDto createNewsfeed(NewsfeedRequestDto newsfeedRequestDto);

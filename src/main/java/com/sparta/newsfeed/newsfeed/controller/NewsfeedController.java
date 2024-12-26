@@ -1,8 +1,8 @@
 package com.sparta.newsfeed.newsfeed.controller;
 
-import com.sparta.newsfeed.liked.service.LikedService;
 import com.sparta.newsfeed.Page;
 import com.sparta.newsfeed.PageQuery;
+import com.sparta.newsfeed.liked.service.LikedService;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestDto;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestQueryDto;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedResponseDto;
@@ -11,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
