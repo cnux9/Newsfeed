@@ -6,7 +6,6 @@ import com.sparta.newsfeed.QuerydslUtils;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestQueryDto;
 import com.sparta.newsfeed.newsfeed.entity.Newsfeed;
 import com.sparta.newsfeed.newsfeed.entity.QNewsfeed;
-import com.sparta.newsfeed.user.entity.QUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.Repository;
@@ -29,7 +28,6 @@ interface NewsfeedQueryRepository {
 class NewsfeedRepositoryImpl implements NewsfeedQueryRepository {
     private final JPQLQueryFactory queryFactory;
     QNewsfeed newsfeed = QNewsfeed.newsfeed;
-    QUser user = QUser.user;
 
     public NewsfeedRepositoryImpl(JPQLQueryFactory queryFactory) {
         this.queryFactory = queryFactory;

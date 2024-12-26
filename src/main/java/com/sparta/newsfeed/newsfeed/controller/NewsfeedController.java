@@ -1,5 +1,6 @@
 package com.sparta.newsfeed.newsfeed.controller;
 
+import com.sparta.newsfeed.liked.service.LikedService;
 import com.sparta.newsfeed.Page;
 import com.sparta.newsfeed.PageQuery;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestDto;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 @RequestMapping("/newsfeed")
 public class NewsfeedController {
     private final NewsfeedService newsfeedService;
+    private final LikedService likedService;
 
     @PostMapping
     public ResponseEntity<NewsfeedResponseDto> createNewsfeed(

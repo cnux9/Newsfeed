@@ -5,6 +5,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.JPQLQuery;
+import com.sparta.newsfeed.exception.CustomException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -28,11 +29,17 @@ public class QuerydslUtils {
 
     public static OrderSpecifier<?>[] toOrderSpecifier(Sort sort, EntityPathBase<?> from) {
         List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
+        PathBuilder<Object> pathBuilder = new PathBuilder<>(Object.class, from.getMetadata());
+
         sort.forEach(order -> {
             Order direction = order.isAscending() ? Order.ASC : Order.DESC;
             String property = order.getProperty();
-            PathBuilder<Object> pathBuilder = new PathBuilder<>(Object.class, from.getMetadata());
-            orderSpecifiers.add(new OrderSpecifier<>(direction, pathBuilder.get(property, Comparable.class)));
+
+            try {
+                orderSpecifiers.add(new OrderSpecifier<>(direction, pathBuilder.get(property, Comparable.class)));
+            } catch (IllegalArgumentException e) {
+                throw new CustomException.BadRequestException("요청된 이름에 해당되는 정렬 기준이 존재하지 않습니다.");
+            }
         });
         return orderSpecifiers.toArray(new OrderSpecifier[0]);
     }

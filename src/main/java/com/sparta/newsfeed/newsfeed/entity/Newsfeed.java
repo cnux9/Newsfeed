@@ -9,6 +9,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Getter
 @Entity
 @Table(name = "newsfeed")
@@ -31,15 +36,48 @@ public class Newsfeed extends BaseEntity {
     @NotBlank
     private String contents;
 
+    @ManyToMany
+    @JoinTable(
+            name = "newsfeed_likes",
+            joinColumns = @JoinColumn(name = "newsfeed_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> likedUsers = new HashSet<>();
+
+    @Column(nullable = false)
+    private int likedCount = 0;
+
     public Newsfeed(User user, String title, String contents) {
         this.user = user;
         this.title = title;
         this.contents = contents;
     }
 
-    public Newsfeed partialUpdate(NewsfeedRequestDto dto){
+    public Newsfeed partialUpdate(NewsfeedRequestDto dto) {
         this.title = dto.getTitle();
         this.contents = dto.getContent();
         return this;
+    }
+
+    public void addLiked(User user) {
+        User targetUser = this.likedUsers.stream()
+                .filter(likedUser -> likedUser.getId().equals(user.getId()))
+                .findAny()
+                .orElse(null);
+        if (targetUser == null) {
+            this.likedUsers.add(user);
+            this.likedCount++;
+        }
+    }
+
+    public void removeLiked(User user) {
+        this.likedUsers.stream()
+                .filter(likedUser -> likedUser.getId().equals(user.getId()))
+                .findAny()
+                .ifPresent(targetUser -> {
+                            this.likedUsers.remove(user);
+                            this.likedCount--;
+                        }
+                );
     }
 }
