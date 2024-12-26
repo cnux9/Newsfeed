@@ -40,12 +40,8 @@ public class CommentService {
 
         Newsfeed newsfeed = newsfeedRepository.findById(requestDto.newsfeedId());
 
-        // TODO
-        Comment comment = new Comment(requestDto.contents());
-        comment.setUserAndNewsfeed(foundUser, newsfeed);
-
+        Comment comment = new Comment(requestDto.contents(), foundUser, newsfeed);
         commentRespository.save(comment);
-
         return new CommentResponseDto(comment);
     }
 

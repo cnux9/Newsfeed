@@ -42,20 +42,8 @@ public class Comment extends BaseEntity {
     @NotNull
     private Newsfeed newsfeed;
 
-//    @ManyToMany
-//    @JoinTable(
-//            name = "comment_likes",
-//            joinColumns = @JoinColumn(name = "comment_id"),
-//            inverseJoinColumns = @JoinColumn(name = "user_id")
-//    )
-//    @JoinColumn(name = "like_user_ids")
-//    private List<User> likeUserIdList;
-
-    public Comment(String contents) {
+    public Comment(String contents, User user, Newsfeed newsfeed) {
         this.contents = contents;
-    }
-
-    public void setUserAndNewsfeed(User user, Newsfeed newsfeed) {
         this.user = user;
         this.newsfeed = newsfeed;
     }
