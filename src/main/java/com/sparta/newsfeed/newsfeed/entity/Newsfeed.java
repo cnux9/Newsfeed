@@ -9,6 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Entity
 @Table(name = "newsfeed")
@@ -31,6 +34,9 @@ public class Newsfeed extends BaseEntity {
     @NotBlank
     private String contents;
 
+    @OneToMany(mappedBy = "newsfeed")
+    private List<User> likedUsers = new ArrayList<>();
+
     public Newsfeed(User user, String title, String contents) {
         this.user = user;
         this.title = title;
@@ -41,5 +47,21 @@ public class Newsfeed extends BaseEntity {
         this.title = dto.getTitle();
         this.contents = dto.getContent();
         return this;
+    }
+
+    public void addLiked(User user){
+        User targetUser = this.likedUsers.stream()
+                .filter(likedUser -> likedUser.getId().equals(user.getId()))
+                .findAny()
+                .orElse(null);
+        if(targetUser == null)
+            this.likedUsers.add(user);
+    }
+
+    public void removeLiked(User user){
+        this.likedUsers.stream()
+                .filter(likedUser -> likedUser.getId().equals(user.getId()))
+                .findAny()
+                .ifPresent(targetUser -> this.likedUsers.remove(user));
     }
 }
