@@ -1,9 +1,10 @@
 package com.sparta.newsfeed.newsfeed.controller;
 
-import com.sparta.newsfeed.liked.service.LikedService;
 import com.sparta.newsfeed.Page;
 import com.sparta.newsfeed.PageQuery;
+import com.sparta.newsfeed.liked.service.LikedService;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestDto;
+import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestQueryDto;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedResponseDto;
 import com.sparta.newsfeed.newsfeed.service.NewsfeedService;
 import jakarta.servlet.http.HttpSession;
@@ -27,8 +28,11 @@ public class NewsfeedController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<NewsfeedResponseDto>> findNewsfeed(PageQuery page) {
-        return new ResponseEntity<>(newsfeedService.findNewsfeed(page), HttpStatus.OK);
+    public ResponseEntity<Page<NewsfeedResponseDto>> findNewsfeed(
+            PageQuery page,
+            @ModelAttribute NewsfeedRequestQueryDto dto
+            ) {
+        return new ResponseEntity<>(newsfeedService.findNewsfeed(page, dto), HttpStatus.OK);
     }
 
     @PutMapping("{id}")
