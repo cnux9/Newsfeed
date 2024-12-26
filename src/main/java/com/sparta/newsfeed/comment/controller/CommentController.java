@@ -6,15 +6,10 @@ import com.sparta.newsfeed.PageQuery;
 import com.sparta.newsfeed.comment.dto.CommentRequestDto;
 import com.sparta.newsfeed.comment.dto.CommentResponseDto;
 import com.sparta.newsfeed.comment.service.CommentService;
-import com.sparta.newsfeed.user.dto.UserRequestDto;
-import com.sparta.newsfeed.user.dto.UserResponseDto;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/newsfeed/{newsfeedId}/comment")

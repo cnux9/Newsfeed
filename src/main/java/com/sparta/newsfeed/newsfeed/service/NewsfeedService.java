@@ -5,7 +5,6 @@ import com.sparta.newsfeed.PageQuery;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestDto;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestQueryDto;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedResponseDto;
-import jakarta.servlet.http.HttpSession;
 
 public interface NewsfeedService {
     //Create
