@@ -18,6 +18,7 @@ public interface CommentRepository extends Repository<Comment, Long>, CommentQue
 
 interface CommentQueryRepository {
     Page<Comment> findAllByNewsfeedId(Pageable pageable, Long id);
+    void deleteAllByUserId(Long id);
 }
 
 @org.springframework.stereotype.Repository
@@ -35,6 +36,13 @@ class CommentRepositoryImpl implements CommentQueryRepository {
                 .selectFrom(comment)
                 .where(comment.newsfeed.id.eq(id));
         return QuerydslUtils.fetchPage(result, comment, pageable);
+    }
+
+    @Override
+    public void deleteAllByUserId(Long id) {
+        queryFactory.delete(comment)
+                .where(comment.user.id.eq(id))
+                .execute();
     }
 }
 

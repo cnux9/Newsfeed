@@ -84,8 +84,9 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is wrong.");
         }
 
+        commentRepository.deleteAllByUserId(id);
         newsfeedRepository.deleteNewsfeedsByUserId(id);
-        commentRepository.deleteCommentsByUserId(id);
+
         //TODO: 에러 처리
         foundUser.updateSoftDelete();
         authService.logout(session);
