@@ -7,11 +7,15 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class UserResponseDto {
+    private final Long id;
     private final String email;
     private final String name;
 
-    public UserResponseDto(User foundUser) {
-        this.email = foundUser.getEmail();
-        this.name = foundUser.getName();
+    public static UserResponseDto toDto(User user){
+        return new UserResponseDto(
+                user.getId(),
+                user.getEmail(),
+                user.getName()
+        );
     }
 }

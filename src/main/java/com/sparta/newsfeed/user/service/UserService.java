@@ -1,6 +1,7 @@
 package com.sparta.newsfeed.user.service;
 
 import com.sparta.newsfeed.auth.service.AuthService;
+import com.sparta.newsfeed.comment.repository.CommentRepository;
 import com.sparta.newsfeed.config.PasswordEncoder;
 import com.sparta.newsfeed.exception.CustomException;
 import com.sparta.newsfeed.newsfeed.repository.NewsfeedRepository;
@@ -23,6 +24,7 @@ public class UserService {
     // TODO: 메소드에 선언? 필드에 선언?
     private final AuthService authService;
     private final NewsfeedRepository newsfeedRepository;
+    private final CommentRepository commentRepository;
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -44,12 +46,12 @@ public class UserService {
                 passwordEncoder.encode(requestDto.getPassword())
         ));
 
-        return new UserResponseDto(savedUser);
+        return UserResponseDto.toDto(savedUser);
     }
 
     public UserResponseDto findUser(Long id) {
         User foundUser = findUserByIdOrElseThrow(id);
-        return new UserResponseDto(foundUser);
+        return UserResponseDto.toDto(foundUser);
     }
 
     public UserResponseDto updateUser(UserUpdateRequestDto requestDto, HttpSession session){
@@ -68,7 +70,7 @@ public class UserService {
                 passwordEncoder.encode(requestDto.getNewPassword())
         );
 
-        return new UserResponseDto(foundUser);
+        return UserResponseDto.toDto(foundUser);
     }
 
     public void deleteUser(UserDeleteRequestDto requestDto , HttpSession session){
@@ -76,6 +78,9 @@ public class UserService {
         passwordsMatchOrElseThrow(requestDto.getPassword(), foundUser.getPassword());
 
         newsfeedRepository.deleteNewsfeedsByUserId(foundUser.getId());
+        commentRepository.deleteAllByUserId(foundUser.getId());
+
+        //TODO: 에러 처리
         foundUser.updateSoftDelete();
 
         authService.logout(session);

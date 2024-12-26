@@ -7,12 +7,14 @@ import com.sparta.newsfeed.friend.dto.FriendResponseDto;
 import com.sparta.newsfeed.friend.entity.FriendRequest;
 import com.sparta.newsfeed.friend.entity.request_state;
 import com.sparta.newsfeed.friend.repository.FriendRequestRepository;
+import com.sparta.newsfeed.user.dto.UserResponseDto;
 import com.sparta.newsfeed.user.entity.User;
 import com.sparta.newsfeed.user.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -103,16 +105,21 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public List<Long> getAllFriends() {
+    public List<UserResponseDto> getAllFriends() {
         String userEmail = authService.getSessionEmail(httpSession);
         User user = userRepository.findUserByEmail(userEmail).orElseThrow();
         Long userId = user.getId();
 
         List<FriendRequest> friends = friendRequestRepository.findByUser(userId);
+
         return friends.stream()
                 .filter(friendRequest -> isValidRequest(request_state.ACCEPTED, friendRequest, userId))
                 .map(FriendRequest::getId)
-                .collect(Collectors.toList());
+                .map(userRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(UserResponseDto::toDto)
+                .toList();
     }
 
     @Override

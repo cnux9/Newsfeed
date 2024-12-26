@@ -3,15 +3,18 @@ package com.sparta.newsfeed.newsfeed.service;
 import com.sparta.newsfeed.Page;
 import com.sparta.newsfeed.PageQuery;
 import com.sparta.newsfeed.auth.service.AuthService;
+import com.sparta.newsfeed.comment.repository.CommentRepository;
 import com.sparta.newsfeed.exception.CustomException;
 import com.sparta.newsfeed.friend.entity.FriendRequest;
 import com.sparta.newsfeed.friend.repository.FriendRequestRepository;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestDto;
+import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestQueryDto;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedResponseDto;
 import com.sparta.newsfeed.newsfeed.entity.Newsfeed;
 import com.sparta.newsfeed.newsfeed.repository.NewsfeedRepository;
 import com.sparta.newsfeed.user.entity.User;
 import com.sparta.newsfeed.user.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +29,11 @@ import java.util.List;
 public class NewsfeedServiceImpl implements NewsfeedService {
     private final NewsfeedRepository newsfeedRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
     private final FriendRequestRepository friendRequestRepository;
     private final AuthService authService;
     private final HttpSession session;
+    private final EntityManager entityManager;
 
     @Override
     public NewsfeedResponseDto createNewsfeed(NewsfeedRequestDto requestDto) {
@@ -41,7 +46,10 @@ public class NewsfeedServiceImpl implements NewsfeedService {
     }
 
     @Override
-    public Page<NewsfeedResponseDto> findNewsfeed(PageQuery page) {
+    public Page<NewsfeedResponseDto> findNewsfeed(
+            PageQuery page,
+            NewsfeedRequestQueryDto dto
+    ) {
         User user = getAuthenticatedUser();
 
         List<Long> friendsIds = new ArrayList<>(friendRequestRepository.findByUser(user.getId())
@@ -51,7 +59,12 @@ public class NewsfeedServiceImpl implements NewsfeedService {
 
         friendsIds.add(user.getId());
 
-        return Page.from(newsfeedRepository.findAll(page.toPageable(), friendsIds)
+        return Page.from(
+                newsfeedRepository.findAll(
+                        page.toPageable(),
+                                dto,
+                                friendsIds
+                        )
                 .map(NewsfeedResponseDto::toDto));
     }
 
@@ -74,7 +87,6 @@ public class NewsfeedServiceImpl implements NewsfeedService {
         Newsfeed feed = newsfeedRepository.findById(id);
         if(!user.getId().equals(feed.getUser().getId()))
             throw new CustomException.UnauthorizedException("자신의 피드만 삭제할 수 있습니다.");
-
         return newsfeedRepository.delete(id);
     }
 
