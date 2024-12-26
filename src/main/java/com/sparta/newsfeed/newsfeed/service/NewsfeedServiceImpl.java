@@ -7,6 +7,7 @@ import com.sparta.newsfeed.exception.CustomException;
 import com.sparta.newsfeed.friend.entity.FriendRequest;
 import com.sparta.newsfeed.friend.repository.FriendRequestRepository;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestDto;
+import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestQueryDto;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedResponseDto;
 import com.sparta.newsfeed.newsfeed.entity.Newsfeed;
 import com.sparta.newsfeed.newsfeed.repository.NewsfeedRepository;
@@ -17,6 +18,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +43,10 @@ public class NewsfeedServiceImpl implements NewsfeedService {
     }
 
     @Override
-    public Page<NewsfeedResponseDto> findNewsfeed(PageQuery page) {
+    public Page<NewsfeedResponseDto> findNewsfeed(
+            PageQuery page,
+            NewsfeedRequestQueryDto dto
+    ) {
         User user = getAuthenticatedUser();
 
         List<Long> friendsIds = new ArrayList<>(friendRequestRepository.findByUser(user.getId())
@@ -51,7 +56,12 @@ public class NewsfeedServiceImpl implements NewsfeedService {
 
         friendsIds.add(user.getId());
 
-        return Page.from(newsfeedRepository.findAll(page.toPageable(), friendsIds)
+        return Page.from(
+                newsfeedRepository.findAll(
+                        page.toPageable(),
+                                dto,
+                                friendsIds
+                        )
                 .map(NewsfeedResponseDto::toDto));
     }
 

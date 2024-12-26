@@ -1,7 +1,9 @@
 package com.sparta.newsfeed.newsfeed.repository;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPQLQueryFactory;
 import com.sparta.newsfeed.QuerydslUtils;
+import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestQueryDto;
 import com.sparta.newsfeed.newsfeed.entity.Newsfeed;
 import com.sparta.newsfeed.newsfeed.entity.QNewsfeed;
 import com.sparta.newsfeed.user.entity.QUser;
@@ -18,7 +20,7 @@ public interface NewsfeedRepository extends Repository<Newsfeed, Integer>, Newsf
 }
 
 interface NewsfeedQueryRepository {
-    Page<Newsfeed> findAll(Pageable pageable, List<Long> ids);
+    Page<Newsfeed> findAll(Pageable pageable, NewsfeedRequestQueryDto query, List<Long> ids);
     boolean delete(Long id);
     void deleteNewsfeedsByUserId(Long id);
 }
@@ -34,10 +36,29 @@ class NewsfeedRepositoryImpl implements NewsfeedQueryRepository {
     }
 
     @Override
-    public Page<Newsfeed> findAll(Pageable pageable, List<Long> ids) {
+    public Page<Newsfeed> findAll(
+            Pageable pageable,
+            NewsfeedRequestQueryDto query,
+            List<Long> ids
+    ) {
+        var builder = new BooleanBuilder();
+
+        if (query != null) {
+            if (query.getStart() != null) {
+                builder.and(newsfeed.createdAt.after(query.getStart()));
+            }
+            if (query.getEnd() != null) {
+                builder.and(newsfeed.createdAt.before(query.getEnd()));
+            }
+        }
+        if (ids != null && !ids.isEmpty()) {
+            builder.and(newsfeed.user.id.in(ids));
+        }
+
         var result = queryFactory
                 .selectFrom(newsfeed)
-                .where(newsfeed.user.id.in(ids));
+                .where(builder);
+
         return QuerydslUtils.fetchPage(result, newsfeed, pageable);
     }
 
