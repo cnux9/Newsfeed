@@ -1,6 +1,7 @@
 package com.sparta.newsfeed.user.service;
 
 import com.sparta.newsfeed.auth.service.AuthService;
+import com.sparta.newsfeed.comment.repository.CommentRepository;
 import com.sparta.newsfeed.config.PasswordEncoder;
 import com.sparta.newsfeed.newsfeed.repository.NewsfeedRepository;
 import com.sparta.newsfeed.user.dto.*;
@@ -21,6 +22,7 @@ public class UserService {
     // TODO: 메소드에 선언? 필드에 선언?
     private final AuthService authService;
     private final NewsfeedRepository newsfeedRepository;
+    private final CommentRepository commentRepository;
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -83,6 +85,7 @@ public class UserService {
         }
 
         newsfeedRepository.deleteNewsfeedsByUserId(id);
+        commentRepository.deleteCommentsByUserId(id);
         //TODO: 에러 처리
         foundUser.updateSoftDelete();
         authService.logout(session);

@@ -6,6 +6,7 @@ import com.sparta.newsfeed.PageQuery;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestDto;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedResponseDto;
 import com.sparta.newsfeed.newsfeed.service.NewsfeedService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
