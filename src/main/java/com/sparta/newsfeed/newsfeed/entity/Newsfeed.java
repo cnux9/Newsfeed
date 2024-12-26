@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -34,8 +36,16 @@ public class Newsfeed extends BaseEntity {
     @NotBlank
     private String contents;
 
-    @OneToMany(mappedBy = "newsfeed")
-    private List<User> likedUsers = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "newsfeed_likes",
+            joinColumns = @JoinColumn(name = "newsfeed_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> likedUsers = new HashSet<>();
+
+    @Column(nullable = false)
+    private int likedCount = 0;
 
     public Newsfeed(User user, String title, String contents) {
         this.user = user;
@@ -43,25 +53,31 @@ public class Newsfeed extends BaseEntity {
         this.contents = contents;
     }
 
-    public Newsfeed partialUpdate(NewsfeedRequestDto dto){
+    public Newsfeed partialUpdate(NewsfeedRequestDto dto) {
         this.title = dto.getTitle();
         this.contents = dto.getContent();
         return this;
     }
 
-    public void addLiked(User user){
+    public void addLiked(User user) {
         User targetUser = this.likedUsers.stream()
                 .filter(likedUser -> likedUser.getId().equals(user.getId()))
                 .findAny()
                 .orElse(null);
-        if(targetUser == null)
+        if (targetUser == null) {
             this.likedUsers.add(user);
+            this.likedCount++;
+        }
     }
 
-    public void removeLiked(User user){
+    public void removeLiked(User user) {
         this.likedUsers.stream()
                 .filter(likedUser -> likedUser.getId().equals(user.getId()))
                 .findAny()
-                .ifPresent(targetUser -> this.likedUsers.remove(user));
+                .ifPresent(targetUser -> {
+                            this.likedUsers.remove(user);
+                            this.likedCount--;
+                        }
+                );
     }
 }

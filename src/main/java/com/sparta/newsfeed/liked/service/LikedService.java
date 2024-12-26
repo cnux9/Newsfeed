@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -26,8 +27,10 @@ public class LikedService {
     public LikedResponseDto UpdateForNewsfeedLiked(Long id){
         User user = getAuthenticatedUser();
         Newsfeed targetNewsfeed = newsfeedRepository.findById(id);
+        if(targetNewsfeed.getUser().getId().equals(user.getId()))
+            throw new CustomException.BadRequestException("자추는 불가능합니다.");
 
-        List<User> likedUsers = targetNewsfeed.getLikedUsers();
+        Set<User> likedUsers = targetNewsfeed.getLikedUsers();
         if(!likedUsers.contains(user))
             targetNewsfeed.addLiked(user);
         else
