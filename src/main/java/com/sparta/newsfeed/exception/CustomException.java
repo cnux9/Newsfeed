@@ -24,4 +24,8 @@ public class CustomException extends RuntimeException {
             super(message, "UNAUTHORIZED", 401);
         }
     }
+
+    public static class BadRequestException extends CustomException {
+        public BadRequestException(String message) { super(message, "BAD_REQUEST", 400); }
+    }
 }

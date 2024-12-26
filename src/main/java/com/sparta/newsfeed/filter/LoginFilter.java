@@ -14,6 +14,9 @@ import java.io.IOException;
 public class LoginFilter implements Filter {
     private static final String[] WHITE_LIST = {"/", "/auth/login"};
 
+    /*
+    isSignup을 사용한 이유는 HttpMethod를 확인하여 User에 CRUD 형식 변경 없이 UserController을 구현하면서도 로그인 필터를 정상작동하게 하기 위함이다.
+     */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException, RuntimeException {
         HttpServletRequest httprequest = (HttpServletRequest) request;
@@ -40,13 +43,7 @@ public class LoginFilter implements Filter {
     }
 
     private boolean isSignup(ServletRequest request, String requestURI) {
-
-        log.info("((HttpServletRequest) request).getMethod() = " + ((HttpServletRequest) request).getMethod());
-        log.info("HttpMethod.POST.name() = " + HttpMethod.POST.name());
         boolean isPostMethod = ((HttpServletRequest) request).getMethod().equals(HttpMethod.POST.name());
-
-        log.info("requestURI = " + requestURI);
-        log.info("PatternMatchUtils.simpleMatch(\"/user\", requestURI) = " + PatternMatchUtils.simpleMatch("/user", requestURI));
         return isPostMethod && PatternMatchUtils.simpleMatch("/user", requestURI);
     }
 

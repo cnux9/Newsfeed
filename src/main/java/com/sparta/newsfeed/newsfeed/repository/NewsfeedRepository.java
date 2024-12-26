@@ -1,10 +1,14 @@
 package com.sparta.newsfeed.newsfeed.repository;
 
 import com.querydsl.jpa.JPQLQueryFactory;
+import com.sparta.newsfeed.QuerydslUtils;
 import com.sparta.newsfeed.newsfeed.entity.Newsfeed;
 import com.sparta.newsfeed.newsfeed.entity.QNewsfeed;
 import com.sparta.newsfeed.user.entity.QUser;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.Repository;
+
 import java.util.List;
 
 public interface NewsfeedRepository extends Repository<Newsfeed, Integer>, NewsfeedQueryRepository {
@@ -14,9 +18,8 @@ public interface NewsfeedRepository extends Repository<Newsfeed, Integer>, Newsf
 }
 
 interface NewsfeedQueryRepository {
-    List<Newsfeed> findAll(List<Long> ids);
+    Page<Newsfeed> findAll(Pageable pageable, List<Long> ids);
     boolean delete(Long id);
-
     void deleteNewsfeedsByUserId(Long id);
 }
 
@@ -31,14 +34,11 @@ class NewsfeedRepositoryImpl implements NewsfeedQueryRepository {
     }
 
     @Override
-    public List<Newsfeed> findAll(List<Long> ids) {
-        return queryFactory
+    public Page<Newsfeed> findAll(Pageable pageable, List<Long> ids) {
+        var result = queryFactory
                 .selectFrom(newsfeed)
-                .where(newsfeed.user.id.in(ids))
-                .orderBy(newsfeed.createdAt.asc())
-                .fetchAll()
-                .stream()
-                .toList();
+                .where(newsfeed.user.id.in(ids));
+        return QuerydslUtils.fetchPage(result, newsfeed, pageable);
     }
 
     @Override

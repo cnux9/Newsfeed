@@ -1,7 +1,6 @@
 package com.sparta.newsfeed.user.entity;
 
 import com.sparta.newsfeed.BaseEntity;
-import com.sparta.newsfeed.user.dto.UserRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -45,9 +44,8 @@ public class User extends BaseEntity {
     /*
     todo : 메서드 이름에 대한 변경의 건, 확인 후 변경이 필요.
      */
-    public void partialUpdate(String name, String email, String password){
+    public void partialUpdate(String name, String password){
         this.name = name;
-        this.email = email;
         this.password = password;
     }
 }

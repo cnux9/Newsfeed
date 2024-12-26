@@ -1,6 +1,7 @@
 package com.sparta.newsfeed.newsfeed.entity;
 
 import com.sparta.newsfeed.BaseEntity;
+import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestDto;
 import com.sparta.newsfeed.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -13,6 +14,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @Table(name = "newsfeed")
 @EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor
 public class Newsfeed extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,5 +36,11 @@ public class Newsfeed extends BaseEntity {
         this.user = user;
         this.title = title;
         this.contents = contents;
+    }
+
+    public Newsfeed partialUpdate(NewsfeedRequestDto dto){
+        this.title = dto.getTitle();
+        this.contents = dto.getContent();
+        return this;
     }
 }

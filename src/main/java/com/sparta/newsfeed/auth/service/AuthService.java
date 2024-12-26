@@ -1,10 +1,9 @@
 package com.sparta.newsfeed.auth.service;
 
-import com.sparta.newsfeed.config.PasswordEncoder;
 import com.sparta.newsfeed.auth.dto.AuthRequestDto;
+import com.sparta.newsfeed.config.PasswordEncoder;
 import com.sparta.newsfeed.user.entity.User;
 import com.sparta.newsfeed.user.repository.UserRepository;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +24,10 @@ public class AuthService {
      */
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    public String getUserEmail(UUID userId) {
+        return sessionMap.get(userId);
+    }
 
     private final Map<UUID, String> sessionMap = new HashMap<>();
 
