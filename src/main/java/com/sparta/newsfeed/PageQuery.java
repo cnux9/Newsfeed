@@ -17,7 +17,7 @@ public class PageQuery {
     private int page = 0;
     private int size = 10;
     private Sort.Direction direction = Sort.Direction.DESC;
-    private List<String> sort = List.of("createdAt");
+    private List<String> sort = List.of();
 
     public PageQuery() {}
 
