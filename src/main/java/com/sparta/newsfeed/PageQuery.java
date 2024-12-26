@@ -7,7 +7,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -18,7 +17,7 @@ public class PageQuery {
     private int page = 0;
     private int size = 10;
     private Sort.Direction direction = Sort.Direction.DESC;
-    private List<String> sort = Collections.emptyList();
+    private List<String> sort = List.of("createdAt");
 
     public PageQuery() {}
 

@@ -1,11 +1,9 @@
 package com.sparta.newsfeed.newsfeed.service;
 
+import com.sparta.newsfeed.Page;
 import com.sparta.newsfeed.PageQuery;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestDto;
 import com.sparta.newsfeed.newsfeed.dto.NewsfeedResponseDto;
-import org.springframework.data.domain.Page;
-
-import java.util.List;
 
 public interface NewsfeedService {
     //Create
@@ -13,7 +11,7 @@ public interface NewsfeedService {
     //Read
     Page<NewsfeedResponseDto> findNewsfeed(PageQuery page);
     //Update
-    NewsfeedResponseDto updateNewsfeed(NewsfeedRequestDto newsfeedRequestDto);
+    NewsfeedResponseDto updateNewsfeed(Long id, NewsfeedRequestDto newsfeedRequestDto);
     //Delete
     boolean deleteNewsfeed(Long id);
 }

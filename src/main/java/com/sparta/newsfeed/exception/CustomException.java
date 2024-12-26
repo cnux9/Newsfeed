@@ -26,6 +26,10 @@ public class CustomException extends RuntimeException {
         }
     }
 
+    public static class BadRequestException extends CustomException {
+        public BadRequestException(String message) { super(message, "BAD_REQUEST", 400); }
+    }
+
     public static class NoSuchUserException extends CustomException {
         public NoSuchUserException() {
             super("Does not exist such user.", "NOT_FOUND", 404);
