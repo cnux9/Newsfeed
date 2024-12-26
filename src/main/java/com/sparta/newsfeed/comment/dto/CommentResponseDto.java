@@ -19,4 +19,12 @@ public class CommentResponseDto {
         this.contents = comment.getContents();
         this.createAt = comment.getCreatedAt();
     }
+
+    public static CommentResponseDto toDto(Comment comment){
+        return new CommentResponseDto(
+                comment.getUser().getName(),
+                comment.getContents(),
+                comment.getCreatedAt()
+        );
+    }
 }
