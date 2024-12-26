@@ -1,12 +1,17 @@
 package com.sparta.newsfeed.comment.entity;
 
 import com.sparta.newsfeed.BaseEntity;
+import com.sparta.newsfeed.comment.dto.CommentRequestDto;
+import com.sparta.newsfeed.newsfeed.dto.NewsfeedRequestDto;
 import com.sparta.newsfeed.newsfeed.entity.Newsfeed;
 import com.sparta.newsfeed.user.entity.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.scheduling.config.Task;
 
@@ -23,16 +28,18 @@ public class Comment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
     @Column
     private String contents;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @NotNull
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "newsfeed_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @NotNull
     private Newsfeed newsfeed;
 
 //    @ManyToMany
@@ -51,5 +58,10 @@ public class Comment extends BaseEntity {
     public void setUserAndNewsfeed(User user, Newsfeed newsfeed) {
         this.user = user;
         this.newsfeed = newsfeed;
+    }
+
+    public Comment partialUpdate(CommentRequestDto dto){
+        this.contents = dto.contents();
+        return this;
     }
 }

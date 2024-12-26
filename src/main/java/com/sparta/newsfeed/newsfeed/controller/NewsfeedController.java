@@ -19,10 +19,9 @@ public class NewsfeedController {
 
     @PostMapping
     public ResponseEntity<NewsfeedResponseDto> createNewsfeed(
-            @RequestBody NewsfeedRequestDto newsfeedRequestDto,
-            HttpSession session
+            @RequestBody NewsfeedRequestDto newsfeedRequestDto
     ) {
-        return new ResponseEntity<>(newsfeedService.createNewsfeed(newsfeedRequestDto, session), HttpStatus.CREATED);
+        return new ResponseEntity<>(newsfeedService.createNewsfeed(newsfeedRequestDto), HttpStatus.CREATED);
     }
 
     @GetMapping

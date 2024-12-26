@@ -38,9 +38,10 @@ public class CommentService {
         String sessionEmail = authService.getSessionEmail(session);
         User foundUser = userRepository.findUserByEmail(sessionEmail).orElseThrow();
 
-        Newsfeed newsfeed = newsfeedRepository.findById(requestDto.getNewsfeedId());
+        Newsfeed newsfeed = newsfeedRepository.findById(requestDto.newsfeedId());
 
-        Comment comment = new Comment(requestDto.getContents());
+        // TODO
+        Comment comment = new Comment(requestDto.contents());
         comment.setUserAndNewsfeed(foundUser, newsfeed);
 
         commentRespository.save(comment);
@@ -70,7 +71,7 @@ public class CommentService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
-        foundComment.setContents(requestDto.getContents());
+        foundComment.partialUpdate(requestDto);
 
         return new CommentResponseDto(foundComment);
     }

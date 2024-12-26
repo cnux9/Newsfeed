@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
-@NoArgsConstructor
 @Entity
 @Table(name = "newsfeed")
 @EntityListeners(AuditingEntityListener.class)

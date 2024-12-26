@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpSession;
 
 public interface NewsfeedService {
     //Create
-    NewsfeedResponseDto createNewsfeed(NewsfeedRequestDto newsfeedRequestDto, HttpSession session);
+    NewsfeedResponseDto createNewsfeed(NewsfeedRequestDto newsfeedRequestDto);
     //Read
     Page<NewsfeedResponseDto> findNewsfeed(PageQuery page);
     //Update
