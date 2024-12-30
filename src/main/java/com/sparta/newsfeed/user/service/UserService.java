@@ -3,6 +3,7 @@ package com.sparta.newsfeed.user.service;
 import com.sparta.newsfeed.auth.service.AuthService;
 import com.sparta.newsfeed.comment.repository.CommentRepository;
 import com.sparta.newsfeed.config.PasswordEncoder;
+import com.sparta.newsfeed.exception.CustomException;
 import com.sparta.newsfeed.newsfeed.repository.NewsfeedRepository;
 import com.sparta.newsfeed.user.dto.*;
 import com.sparta.newsfeed.user.entity.User;
@@ -10,9 +11,10 @@ import com.sparta.newsfeed.user.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Transactional
 @Service
@@ -27,69 +29,89 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public SignUpResponseDto createUser(SignUpRequestDto dto) {
-        if (userRepository.existsUserByEmail(dto.getEmail())) {
-            // 해당 이메일의 사용자가 탈퇴했는지 여부는 알 수 없음
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "가입이 불가능한 이메일입니다.");
-        }
-        User user = new User(dto.getName(), dto.getEmail(), passwordEncoder.encode(dto.getPassword()));
-        User savedUser = userRepository.save(user);
+    private static final Pattern passwordPattern = Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,}$");
 
-        return new SignUpResponseDto(savedUser.getName(), savedUser.getEmail());
+    public UserResponseDto createUser(SignUpRequestDto requestDto) {
+        // 비밀번호 패턴 검증
+        validatePassword(requestDto.getPassword());
+
+        // 이메일 중복 검사 + 재가입 불가능 검사
+        if (userRepository.existsUserByEmail(requestDto.getEmail())) {
+            throw new CustomException.EmailUnavailableException();
+        }
+
+        User savedUser = userRepository.save(new User(
+                requestDto.getName(),
+                requestDto.getEmail(),
+                passwordEncoder.encode(requestDto.getPassword())
+        ));
+
+        return UserResponseDto.toDto(savedUser);
     }
 
     public UserResponseDto findUser(Long id) {
-        //TODO: 에러 처리
-        User foundUser = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
-        return new UserResponseDto(id, foundUser.getEmail(), foundUser.getName());
+        User foundUser = findUserByIdOrElseThrow(id);
+        return UserResponseDto.toDto(foundUser);
     }
 
-    public UserResponseDto updateUser(Long id, UserRequestDto requestDto, HttpSession session){
+    public UserResponseDto updateUser(UserUpdateRequestDto requestDto, HttpSession session){
+        validatePassword(requestDto.getNewPassword());
 
-        //TODO: 에러 처리
-        User foundUser = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
-        String sessionEmail = authService.getSessionEmail(session);
-
-        if (!foundUser.getEmail().equals(sessionEmail)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You can not update other user's information.");
-        }
-
-        //TODO: 수정 시 required? 예를 들어 비밀번호만 수정(비밀번호 확인) or 이름/이메일 변경
-        if (!passwordEncoder.matches(requestDto.getOldPassword(), foundUser.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is wrong.");
-        }
-
+        // 같은 비밀번호로 변경하려는 경우
         if (requestDto.getOldPassword().equals(requestDto.getNewPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can not change with same password.");
+            throw new CustomException.UpdateWithSamePasswordException();
         }
+
+        User foundUser = findUserBySessionOrElseThrow(session);
+        passwordsMatchOrElseThrow(requestDto.getOldPassword(), foundUser.getPassword());
 
         foundUser.partialUpdate(
                 requestDto.getName(),
                 passwordEncoder.encode(requestDto.getNewPassword())
         );
 
-        return new UserResponseDto(id, requestDto.getEmail(), requestDto.getName());
+        return UserResponseDto.toDto(foundUser);
     }
 
-    public void deleteUser(Long id, UserDeleteRequestDto requestDto , HttpSession session){
-        User foundUser = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
-        String email = authService.getSessionEmail(session);
+    public void deleteUser(UserDeleteRequestDto requestDto , HttpSession session){
+        User foundUser = findUserBySessionOrElseThrow(session);
+        passwordsMatchOrElseThrow(requestDto.getPassword(), foundUser.getPassword());
 
-        if (!email.equals(foundUser.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can not delete other user's account.");
-        }
-
-        //TODO:겹치는 코드 , 메서드 추출 ?
-        if (!passwordEncoder.matches(requestDto.getPassword(), foundUser.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is wrong.");
-        }
-
-        commentRepository.deleteAllByUserId(id);
-        newsfeedRepository.deleteNewsfeedsByUserId(id);
+        newsfeedRepository.deleteNewsfeedsByUserId(foundUser.getId());
+        commentRepository.deleteAllByUserId(foundUser.getId());
 
         //TODO: 에러 처리
         foundUser.updateSoftDelete();
+
         authService.logout(session);
+    }
+
+    private User findUserByIdOrElseThrow(Long id) {
+        return userRepository.findById(id).orElseThrow(CustomException.NoSuchUserException::new);
+    }
+
+    private User findUserBySessionOrElseThrow(HttpSession session) {
+        String sessionEmail = authService.getSessionEmail(session);
+        User user = findUserByEmailOrElseThrow(sessionEmail);
+
+        return user;
+    }
+
+    private User findUserByEmailOrElseThrow(String sessionEmail) {
+        return userRepository.findUserByEmail(sessionEmail).orElseThrow(CustomException.NoSuchUserException::new);
+    }
+
+    private void passwordsMatchOrElseThrow(String rawPassword, String encodedPassword) {
+        if (!passwordEncoder.matches(rawPassword, encodedPassword)) {
+            throw new CustomException.WrongPasswordException();
+        }
+    }
+
+    public void validatePassword(String password) {
+        Matcher matcher = passwordPattern.matcher(password);
+        if (!matcher.matches()) {
+            throw new CustomException.InvalidPasswordException();
+        }
     }
 
 }

@@ -17,17 +17,11 @@ public class UserController {
 
     private final UserService userService;
 
-    /**
-    반영되어야 할 부분
-     * 회원가입 시 비밀번호 조건설정 - 완료
-     * 중복 아이디(이메일) 확인 - 완료
-     *
-     **/
     @PostMapping
-    public ResponseEntity<SignUpResponseDto> createUser(
+    public ResponseEntity<UserResponseDto> createUser(
             @Validated @RequestBody SignUpRequestDto requestDto
     ) {
-        SignUpResponseDto responseDto = userService.createUser(requestDto);
+        UserResponseDto responseDto = userService.createUser(requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
@@ -38,31 +32,24 @@ public class UserController {
         return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     public ResponseEntity<UserResponseDto> updateUser(
-            @PathVariable Long id,
-            @Valid @RequestBody UserRequestDto requestDto,
+            @Valid @RequestBody UserUpdateRequestDto requestDto,
             HttpSession session
     ) {
         UserResponseDto responseDto =
                 userService.updateUser(
-                        id,
                         requestDto,
                         session
                 );
         return new ResponseEntity<>(responseDto,HttpStatus.OK);
     }
 
-    /*
-    사용자를 삭제하기 위해 DeleteMapping을 사용하였다.
-    애초에 로그인 필터가 있기 때문에 사용자 수정과 삭제에서는 일단 비밀번호 검증을 하지 않았다.
-     */
-    @DeleteMapping("/{id}")
+    @DeleteMapping
     public ResponseEntity<Void> deleteUser(
-            @PathVariable Long id,
             @Valid @RequestBody UserDeleteRequestDto requestDto , HttpSession session
     ) {
-        userService.deleteUser(id, requestDto ,session);
+        userService.deleteUser(requestDto, session);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
